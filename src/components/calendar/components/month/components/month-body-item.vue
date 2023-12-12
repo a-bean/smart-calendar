@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
-import { TDate } from '@/components/Calendar/types';
+import { TDate } from '@/components/calendar/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '../../../hooks/useMonth';
 import { getDate } from '../../../date';

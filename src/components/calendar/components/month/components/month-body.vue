@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { TDate } from '@/components/Calendar/types';
+import { TDate } from '@/components/calendar/types';
 import { convertTo2DArray } from '../../../utils';
 import MonthBodyItem from './month-body-item.vue';
 
