@@ -1,0 +1,18 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+stable_branch=("master" "main" "dev" "test" "feat")
+branch=`git branch --show-current`
+for b in ${stable_branch[@]}
+do
+  if [ $b == $branch ]
+  then
+    exit 0
+  fi
+done
+if [[ $branch =~ ^(feat|bugfix|test|dev|hotfix)-.+$ ]]
+then
+  exit 0
+fi
+echo -e "\033[31m分支名 $branch 有误 \033[0m \033[33m只允许 ${stable_branch[@]}, feat-*,, bugfix-*, hotfix-*, dev-*, test-* 等分支名\033[0m"
+exit 1
