@@ -51,9 +51,10 @@ const surplusTaskCount = computed(() => {
 const getTaskBoxClientHeight = () => {
   const taskBoxHeight = taskBoxRef.value?.clientHeight;
   const taskHeight = taskRef.value[0]?.$el.clientHeight;
-  if (!taskBoxHeight) return;
-  // 这里的 -5 调整样式而已
-  showTaskCount.value = Math.floor((taskBoxHeight - 5) / taskHeight);
+  if (!taskHeight || !taskBoxHeight || taskBoxHeight < 2 * taskHeight) return;
+
+  showTaskCount.value = Math.floor(taskBoxHeight / taskHeight);
+  console.log('taskBoxHeight', taskBoxHeight, taskHeight, showTaskCount.value);
 };
 
 let timer: NodeJS.Timeout;

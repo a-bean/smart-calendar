@@ -20,6 +20,6 @@ onMounted(() => {
 
 <style>
 .month {
-  --uno: h100% flex flex-col b-1 b-#ccc border-rd b-solid min-h-100 min-w-210;
+  --uno: h100% flex flex-col b-1 b-#ccc border-rd b-solid min-h-120 min-w-230;
 }
 </style>
