@@ -16,7 +16,7 @@
       </div>
     </div>
     <div ref="taskBoxRef" class="month-body-item-list">
-      <MonthTask v-for="item of props.data.dataList?.slice(0, 1)" ref="taskRef" :key="item.id" :data="item" />
+      <MonthTask v-for="item of props.data.dataList?.slice(0, 1)" ref="taskRef" :key="item.id" :data="item" class="w200% relative" />
       <MonthTask v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)" :key="item.id" :data="item" />
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
     </div>
@@ -51,10 +51,10 @@ const surplusTaskCount = computed(() => {
 const getTaskBoxClientHeight = () => {
   const taskBoxHeight = taskBoxRef.value?.clientHeight;
   const taskHeight = taskRef.value[0]?.$el.clientHeight;
+
   if (!taskHeight || !taskBoxHeight || taskBoxHeight < 2 * taskHeight) return;
 
-  showTaskCount.value = Math.floor(taskBoxHeight / taskHeight);
-  console.log('taskBoxHeight', taskBoxHeight, taskHeight, showTaskCount.value);
+  showTaskCount.value = Math.floor((taskBoxHeight - 5) / taskHeight);
 };
 
 let timer: NodeJS.Timeout;
@@ -84,7 +84,7 @@ onUnmounted(() => {
 
 <style>
 .month-body-item {
-  --uno: h100% overflow-hidden flex flex-col position-relative;
+  --uno: h100% flex flex-col position-relative;
 }
 .month-body-item-title {
   --uno: h6 flex flex-justify-between flex-items-center font-size-3.5;
@@ -93,7 +93,7 @@ onUnmounted(() => {
   --uno: inline-block h6 w6 border-rd-50% line-height-6 color-#fff bg-red text-center;
 }
 .month-body-item-list {
-  --uno: flex-1 mt1 overflow-hidden;
+  --uno: flex-1 mt1;
 }
 .month-body-item-list-surplus {
   --uno: font-size-2.5 pl-2 pr-2;

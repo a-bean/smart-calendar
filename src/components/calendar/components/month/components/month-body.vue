@@ -1,5 +1,5 @@
 <template>
-  <div class="h100% overflow-hidden flex flex-col">
+  <div class="month-body">
     <div v-for="(row, index) of formatData" :key="index" class="month-body-box">
       <div
         v-for="(item, i) of row"
@@ -30,12 +30,12 @@ const formatData = computed(() => convertTo2DArray<TDate>(props.data, 7));
 
 <style>
 .month-body {
-  --uno: h100% overflow-hidden flex flex-col;
+  --uno: h100% flex flex-col;
 }
 .month-body-box {
   --uno: flex flex-1 b-t-1 b-t-#ccc b-t-solid overflow-hidden;
 }
 .month-body-item-box {
-  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 h100% w100% overflow-hidden;
+  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 h100% w100%;
 }
 </style>
