@@ -11,31 +11,44 @@
         <span v-if="props.data.isToday" class="month-body-item-is-today">
           {{ cutDay(props.data.date) }}
         </span>
-
         <span v-else>{{ cutDay(props.data.date) }} </span>
-
-        日{{ showTaskCount }}
+        日
       </div>
     </div>
     <div class="month-body-item-list">
-      <MonthTask v-for="item of props.data.dataList?.slice(0, 1)" ref="taskRef" :key="item.id" :data="item" class="w200% relative z-1" />
-      <MonthTask v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)" :key="item.id" :data="item" />
+      <MonthTask
+        v-for="item of props.data.dataList?.slice(0, 1)"
+        ref="taskRef"
+        :key="item.id"
+        :data="item"
+        :class="`w${getMonthTaskWidth(item)}00%`"
+      />
+      <MonthTask
+        v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)"
+        :key="item.id"
+        :data="item"
+        :class="`w${getMonthTaskWidth(item)}00%`"
+      />
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
-import { TDate } from '@/types';
+import { TData, TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
-import { getDate } from '@/date';
+import { getDate, getTimeInterval } from '@/date';
 
 const { onDrop, onDragover } = useMonth();
 
 const props = defineProps<{
-  data: TDate & { dataList?: { id: number; name: string }[] };
+  data: TDate & { dataList?: TData[] };
 }>();
+
+const getMonthTaskWidth = (data: TData) => {
+  return getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }) + 1;
+};
 
 const cutDay = (day: string) => (day.slice(-2).startsWith('0') ? day.slice(-1) : day.slice(-2));
 
@@ -94,7 +107,7 @@ onUnmounted(() => {
   --uno: h100% flex flex-col position-relative;
 }
 .month-body-item-title {
-  --uno: h6 flex flex-justify-between flex-items-center font-size-3.5;
+  --uno: h6 flex flex-justify-between flex-items-center font-size-3.5 p2 pb0;
 }
 .month-body-item-is-today {
   --uno: inline-block h6 w6 border-rd-50% line-height-6 color-#fff bg-red text-center;

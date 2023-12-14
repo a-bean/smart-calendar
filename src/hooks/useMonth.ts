@@ -2,42 +2,30 @@ import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
 import { findDropTarget } from '@/utils';
-import { TDate } from '@/types';
+import { TData, TDate } from '@/types';
 
-const periodViewList = ref<{ [key: string]: { id: number; name: string }[] }>({
-  '2023-11-29': [
-    { id: 12, name: '张三' },
-    { id: 13, name: '李四' },
-    { id: 14, name: '郑十' },
-    { id: 15, name: '吴九' },
-    { id: 16, name: '吴九' },
-  ],
-  // '2023-12-01': [
-  //   { id: 1, name: '张三' },
-  //   { id: 2, name: '李四' },
-  // ],
-  // '2023-12-02': [
-  //   { id: 3, name: '王五' },
-  //   { id: 4, name: '赵六' },
-  // ],
-  // '2023-12-03': [
-  //   { id: 5, name: '田七' },
-  //   { id: 6, name: '周八' },
-  // ],
+const periodViewList = ref<{ [key: string]: TData[] }>({
   '2023-12-04': [
-    { id: 7, name: '吴九' },
-    { id: 8, name: '郑十' },
-    { id: 9, name: '吴九' },
-    { id: 10, name: '郑十' },
-    { id: 11, name: '吴九' },
+    { id: 7, name: '吴九', start: '2023-12-04 08:00:00', end: '2023-12-05 09:00:00' },
+    { id: 8, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-05 10:00:00' },
+    { id: 9, name: '吴九', start: '2023-12-04 10:00:00', end: '2023-12-04 11:00:00' },
+    { id: 10, name: '郑十', start: '2023-12-04 11:00:00', end: '2023-12-04 12:00:00' },
+    { id: 11, name: '吴九', start: '2023-12-04 12:00:00', end: '2023-12-04 13:00:00' },
   ],
-  // '2023-12-05': [
-  //   { id: 17, name: '吴九' },
-  //   { id: 18, name: '郑十' },
-  //   { id: 19, name: '吴九' },
-  //   { id: 20, name: '郑十' },
-  //   { id: 21, name: '吴九' },
-  // ],
+  '2023-12-05': [
+    { id: 27, name: '吴九', start: '2023-12-04 08:00:00', end: '2023-12-05 09:00:00' },
+    { id: 28, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-05 10:00:00' },
+    { id: 29, name: '吴九', start: '2023-12-04 10:00:00', end: '2023-12-04 11:00:00' },
+    { id: 30, name: '郑十', start: '2023-12-04 11:00:00', end: '2023-12-04 12:00:00' },
+    { id: 31, name: '吴九', start: '2023-12-04 12:00:00', end: '2023-12-04 13:00:00' },
+  ],
+  '2023-12-06': [
+    { id: 17, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' },
+    { id: 18, name: '郑十', start: '2023-12-05 09:00:00', end: '2023-12-05 10:00:00' },
+    { id: 19, name: '吴九', start: '2023-12-05 10:00:00', end: '2023-12-05 11:00:00' },
+    { id: 20, name: '郑十', start: '2023-12-05 11:00:00', end: '2023-12-05 12:00:00' },
+    { id: 21, name: '吴九', start: '2023-12-05 12:00:00', end: '2023-12-05 13:00:00' },
+  ],
 });
 
 const currentDays = ref<TDate[]>([]);
@@ -125,10 +113,16 @@ export const useMonth = () => {
     if (!periodViewList.value[dragData.targetBox]) {
       periodViewList.value[dragData.targetBox] = [];
     }
-    periodViewList.value[dragData.targetBox].push({ id: dragData.targetId, name: '111' });
+    periodViewList.value[dragData.targetBox].push({
+      id: dragData.targetId,
+      name: '111',
+      start: '2023-12-04 08:00:00',
+      end: '2023-12-05 09:00:00',
+    });
   };
 
   const selectedTask = (id: number) => {
+    console.log(id);
     selectedTaskId.value = id;
   };
 

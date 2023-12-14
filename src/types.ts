@@ -17,6 +17,12 @@ export type TDate = {
   isFirstDayOfLunarMonth?: boolean;
   isSaturdayOrSunday: boolean;
 };
+export type TData = {
+  id: number | string;
+  name: string;
+  start: string;
+  end: string;
+};
 
 export type TYearDate = {
   date: string;

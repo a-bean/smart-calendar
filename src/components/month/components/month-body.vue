@@ -17,16 +17,26 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { TDate } from '@/types';
-import { convertTo2DArray } from '@/utils';
+import { TData, TDate } from '@/types';
+import { convertTo2DArray, generateUUID } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
 
 const props = defineProps<{
-  data: (TDate & { dataList?: { id: number; name: string }[] })[];
+  data: (TDate & { dataList?: TData[] })[];
 }>();
 
 const formatData = computed(() => {
-  return convertTo2DArray<TDate>(props.data, 7);
+  const list = convertTo2DArray<TDate & { dataList?: TData[] }>(props.data, 7);
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 0; j < list[i].length - 1; j++) {
+      const dataList = list[i][j]?.dataList;
+      if (dataList?.length) {
+        console.log(dataList);
+        // TODO:这里需要处理跨日的task
+      }
+    }
+  }
+  return convertTo2DArray<TDate & { dataList?: TData[] }>(props.data, 7);
 });
 </script>
 
@@ -38,7 +48,7 @@ const formatData = computed(() => {
   --uno: flex flex-1 b-t-1 b-t-#ccc b-t-solid overflow-hidden;
 }
 .month-body-item-box {
-  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 pb-0 box-border h100% w100%;
+  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid box-border h100% w100%;
 }
 </style>
 @/calendar/types
