@@ -4,5 +4,5 @@
   </div>
 </template>
 <script setup lang="ts">
-import Calendar from '@/components/calendar/index.vue';
+import Calendar from '@/index.vue';
 </script>

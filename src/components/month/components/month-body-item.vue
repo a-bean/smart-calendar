@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
-import { TDate } from '@/components/calendar/types';
+import { TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '../../../hooks/useMonth';
 import { getDate } from '../../../date';
@@ -54,7 +54,7 @@ const getTaskBoxClientHeight = () => {
 
   if (!taskHeight || !taskBoxHeight || taskBoxHeight < 2 * taskHeight) return;
 
-  showTaskCount.value = Math.floor((taskBoxHeight - 5) / taskHeight);
+  showTaskCount.value = Math.floor(taskBoxHeight / taskHeight);
 };
 
 let timer: NodeJS.Timeout;
@@ -99,3 +99,4 @@ onUnmounted(() => {
   --uno: font-size-2.5 pl-2 pr-2;
 }
 </style>
+@/calendar/types

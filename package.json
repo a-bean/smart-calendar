@@ -1,5 +1,5 @@
 {
-  "name": "vue3-calendar",
+  "name": "smart-calendar.vue",
   "version": "0.0.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",

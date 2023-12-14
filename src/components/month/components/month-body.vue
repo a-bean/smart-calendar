@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { TDate } from '@/components/calendar/types';
+import { TDate } from '@/types';
 import { convertTo2DArray } from '../../../utils';
 import MonthBodyItem from './month-body-item.vue';
 
@@ -39,3 +39,4 @@ const formatData = computed(() => convertTo2DArray<TDate>(props.data, 7));
   --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 h100% w100%;
 }
 </style>
+@/calendar/types
