@@ -1,6 +1,6 @@
 <template>
-  <div class="month-body-item" :data-date="props.data.date" @dragover="onDragover" @drop="onDrop">
-    <div class="month-body-item-title" :class="{ 'color-#c9cdd4': !props.data.isCurrentMonth }">
+  <div ref="boxRef" class="month-body-item" :data-date="props.data.date" @dragover="onDragover" @drop="onDrop">
+    <div ref="titleRef" class="month-body-item-title" :class="{ 'color-#c9cdd4': !props.data.isCurrentMonth }">
       <div :class="{ 'border-b border-b-solid border-red ': props.data.isFirstDayOfLunarMonth }">
         {{ props.data.isFirstDayOfLunarMonth ? props.data.lunarMonth + props.data.lunarDay : props.data.lunarDay }}
       </div>
@@ -11,12 +11,14 @@
         <span v-if="props.data.isToday" class="month-body-item-is-today">
           {{ cutDay(props.data.date) }}
         </span>
-        <span v-else>{{ cutDay(props.data.date) }}</span>
-        日
+
+        <span v-else>{{ cutDay(props.data.date) }} </span>
+
+        日{{ showTaskCount }}
       </div>
     </div>
-    <div ref="taskBoxRef" class="month-body-item-list">
-      <MonthTask v-for="item of props.data.dataList?.slice(0, 1)" ref="taskRef" :key="item.id" :data="item" class="w200% relative" />
+    <div class="month-body-item-list">
+      <MonthTask v-for="item of props.data.dataList?.slice(0, 1)" ref="taskRef" :key="item.id" :data="item" class="w200% relative z-1" />
       <MonthTask v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)" :key="item.id" :data="item" />
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
     </div>
@@ -37,7 +39,9 @@ const props = defineProps<{
 
 const cutDay = (day: string) => (day.slice(-2).startsWith('0') ? day.slice(-1) : day.slice(-2));
 
-const taskBoxRef = ref<HTMLElement | null>(null);
+const boxRef = ref<HTMLElement | null>(null);
+const titleRef = ref<HTMLElement | null>(null);
+
 const taskRef = ref<InstanceType<typeof MonthTask>[]>([]);
 
 const showTaskCount = ref(props.data.dataList?.length || 0);
@@ -49,9 +53,12 @@ const surplusTaskCount = computed(() => {
 });
 
 const getTaskBoxClientHeight = () => {
-  const taskBoxHeight = taskBoxRef.value?.clientHeight;
+  const boxHeight = boxRef.value?.clientHeight;
+  const titleHeight = titleRef.value?.clientHeight;
+  if (!boxHeight || !titleHeight) return;
+  // 不直接拿 month-body-item-list 的高度，因为没有设置溢出隐藏（为了实现跨日期的task）
+  const taskBoxHeight = boxHeight - titleHeight;
   const taskHeight = taskRef.value[0]?.$el.clientHeight;
-
   if (!taskHeight || !taskBoxHeight || taskBoxHeight < 2 * taskHeight) return;
 
   showTaskCount.value = Math.floor(taskBoxHeight / taskHeight);
@@ -96,7 +103,6 @@ onUnmounted(() => {
   --uno: flex-1 mt1;
 }
 .month-body-item-list-surplus {
-  --uno: font-size-2.5 pl-2 pr-2;
+  --uno: font-size-2.8 pl-2 pr-2;
 }
 </style>
-@/calendar/types

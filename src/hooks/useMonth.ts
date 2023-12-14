@@ -1,26 +1,29 @@
 import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { getOneDayOfWeekDaysAndMonthDays, weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
+import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
 import { findDropTarget } from '@/utils';
 import { TDate } from '@/types';
 
 const periodViewList = ref<{ [key: string]: { id: number; name: string }[] }>({
-  '2023-10-29': [
+  '2023-11-29': [
     { id: 12, name: '张三' },
     { id: 13, name: '李四' },
+    { id: 14, name: '郑十' },
+    { id: 15, name: '吴九' },
+    { id: 16, name: '吴九' },
   ],
-  '2023-12-01': [
-    { id: 1, name: '张三' },
-    { id: 2, name: '李四' },
-  ],
-  '2023-12-02': [
-    { id: 3, name: '王五' },
-    { id: 4, name: '赵六' },
-  ],
-  '2023-12-03': [
-    { id: 5, name: '田七' },
-    { id: 6, name: '周八' },
-  ],
+  // '2023-12-01': [
+  //   { id: 1, name: '张三' },
+  //   { id: 2, name: '李四' },
+  // ],
+  // '2023-12-02': [
+  //   { id: 3, name: '王五' },
+  //   { id: 4, name: '赵六' },
+  // ],
+  // '2023-12-03': [
+  //   { id: 5, name: '田七' },
+  //   { id: 6, name: '周八' },
+  // ],
   '2023-12-04': [
     { id: 7, name: '吴九' },
     { id: 8, name: '郑十' },
@@ -28,9 +31,16 @@ const periodViewList = ref<{ [key: string]: { id: number; name: string }[] }>({
     { id: 10, name: '郑十' },
     { id: 11, name: '吴九' },
   ],
+  // '2023-12-05': [
+  //   { id: 17, name: '吴九' },
+  //   { id: 18, name: '郑十' },
+  //   { id: 19, name: '吴九' },
+  //   { id: 20, name: '郑十' },
+  //   { id: 21, name: '吴九' },
+  // ],
 });
 
-const currentDays = ref(getOneDayOfWeekDaysAndMonthDays());
+const currentDays = ref<TDate[]>([]);
 const dragData = reactive<{
   targetId: number;
   targetBox: string | null;

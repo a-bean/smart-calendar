@@ -37,4 +37,3 @@ onUnmounted(() => {
   window.removeEventListener('resize', getBodyHeight);
 });
 </script>
-<style lang="scss" scoped></style>

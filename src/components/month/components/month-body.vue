@@ -25,7 +25,9 @@ const props = defineProps<{
   data: (TDate & { dataList?: { id: number; name: string }[] })[];
 }>();
 
-const formatData = computed(() => convertTo2DArray<TDate>(props.data, 7));
+const formatData = computed(() => {
+  return convertTo2DArray<TDate>(props.data, 7);
+});
 </script>
 
 <style>
@@ -36,7 +38,7 @@ const formatData = computed(() => convertTo2DArray<TDate>(props.data, 7));
   --uno: flex flex-1 b-t-1 b-t-#ccc b-t-solid overflow-hidden;
 }
 .month-body-item-box {
-  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 h100% w100%;
+  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid p2 pb-0 box-border h100% w100%;
 }
 </style>
 @/calendar/types
