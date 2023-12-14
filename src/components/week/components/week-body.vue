@@ -6,9 +6,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useDay } from '../../../hooks/useDay';
-import TimeDivider from '../../time-divider/time-divider.vue';
-import DayTask from '../../day/components/day-task.vue';
+import { useDay } from '@/hooks/useDay';
+import TimeDivider from '@/components/time-divider/time-divider.vue';
+import DayTask from '@/components/day/components/day-task.vue';
 
 const { mokeData } = useDay();
 

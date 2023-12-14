@@ -24,9 +24,9 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { getDate } from '../../../date';
-import { ONE_HOUR_HEIGHT, ETaskMoveType } from '../../../config';
-import { useDay } from '../../../hooks/useDay';
+import { getDate } from '@/date';
+import { ONE_HOUR_HEIGHT, ETaskMoveType } from '@/config';
+import { useDay } from '@/hooks/useDay';
 
 const { selectedTask, mousedown, mouseenter } = useDay();
 

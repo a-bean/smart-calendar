@@ -10,9 +10,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import WeekHeader from './components/week-header.vue';
-import TimeScale from '../time-scale/time-scale.vue';
+import TimeScale from '@/components/time-scale/time-scale.vue';
 import WeekBody from './components/week-body.vue';
-import { useDay } from '../../hooks/useDay';
+import { useDay } from '@/hooks/useDay';
 
 const { taskBodyHeight } = useDay();
 

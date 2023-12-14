@@ -26,8 +26,8 @@
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import { TDate } from '@/types';
 import MonthTask from './month-task.vue';
-import { useMonth } from '../../../hooks/useMonth';
-import { getDate } from '../../../date';
+import { useMonth } from '@/hooks/useMonth';
+import { getDate } from '@/date';
 
 const { onDrop, onDragover } = useMonth();
 

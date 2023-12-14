@@ -3,8 +3,8 @@
 </template>
 <script setup lang="ts">
 import { onUnmounted, ref, onMounted } from 'vue';
-import { getDate } from '../../date';
-import { ONE_HOUR_HEIGHT } from '../../config';
+import { getDate } from '@/date';
+import { ONE_HOUR_HEIGHT } from '@/config';
 
 const time = ref(getDate({ format: 'HH:mm' }));
 

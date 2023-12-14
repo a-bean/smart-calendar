@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ONE_HOUR_HEIGHT } from '../../config';
+import { ONE_HOUR_HEIGHT } from '@/config';
 </script>
 
 <style>

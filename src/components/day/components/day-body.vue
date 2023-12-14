@@ -7,10 +7,10 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import TimeDivider from '../../time-divider/time-divider.vue';
-import CurrentTimeline from '../../current-timeline/current-timeline.vue';
+import TimeDivider from '@/components/time-divider/time-divider.vue';
+import CurrentTimeline from '@/components/current-timeline/current-timeline.vue';
 import DayTask from './day-task.vue';
-import { useDay } from '../../../hooks/useDay';
+import { useDay } from '@/hooks/useDay';
 
 const props = defineProps<{
   data: {

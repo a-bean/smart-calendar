@@ -28,9 +28,9 @@
 </template>
 <script setup lang="ts">
 import { defineProps, computed } from 'vue';
-import { getDate, getLunarDay, weeks } from '../../../date';
-import { convertTo2DArray } from '../../../utils';
-import { TYearDate } from '../../../types';
+import { getDate, getLunarDay, weeks } from '@/date';
+import { convertTo2DArray } from '@/utils';
+import { TYearDate } from '@/types';
 import { cloneDeep } from 'lodash';
 
 const props = defineProps<{

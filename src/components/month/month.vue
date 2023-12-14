@@ -8,8 +8,8 @@
 import { onMounted } from 'vue';
 import MonthHeader from './components/month-header.vue';
 import MonthBody from './components/month-body.vue';
-import { getOneDayOfWeekDaysAndMonthDays } from '../../date';
-import { useMonth } from '../../hooks/useMonth';
+import { getOneDayOfWeekDaysAndMonthDays } from '@/date';
+import { useMonth } from '@/hooks/useMonth';
 
 const { currentDays, completeData } = useMonth();
 

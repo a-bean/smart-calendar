@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import YearMonth from './components/year-month.vue';
-import { getYearDates } from '../../date';
+import { getYearDates } from '@/date';
 
 const yearDates = ref(getYearDates());
 </script>

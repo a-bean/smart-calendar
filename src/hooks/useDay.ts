@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { ETaskMoveType } from '../config';
-import { getTimeInterval, getDate } from '../date';
+import { ETaskMoveType } from '@/config';
+import { getTimeInterval, getDate } from '@/date';
 
 const MIN_HEIGHT = 15;
 const selectedTaskId = ref(0);

@@ -15,7 +15,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useMonth } from '../../../hooks/useMonth';
+import { useMonth } from '@/hooks/useMonth';
 
 const { onDragStart, selectedTaskId, selectedTask } = useMonth();
 

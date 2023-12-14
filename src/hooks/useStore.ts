@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { ECalendarType } from '../types';
+import { ECalendarType } from '@/types';
 
 type TStore = {
   calendarVisible: ECalendarType;

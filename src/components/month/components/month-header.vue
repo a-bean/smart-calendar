@@ -13,7 +13,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { weeks } from '../../../date';
+import { weeks } from '@/date';
 </script>
 
 <style>

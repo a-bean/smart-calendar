@@ -15,8 +15,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useDay } from '../../hooks/useDay';
-import TimeScale from '../time-scale/time-scale.vue';
+import { useDay } from '@/hooks/useDay';
+import TimeScale from '@/components/time-scale/time-scale.vue';
 import dayBody from './components/day-body.vue';
 
 const { mokeData } = useDay();

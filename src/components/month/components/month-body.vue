@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { TDate } from '@/types';
-import { convertTo2DArray } from '../../../utils';
+import { convertTo2DArray } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
 
 const props = defineProps<{

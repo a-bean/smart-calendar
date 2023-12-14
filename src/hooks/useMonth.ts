@@ -1,8 +1,8 @@
 import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { getOneDayOfWeekDaysAndMonthDays, weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '../date';
-import { findDropTarget } from '../utils';
-import { TDate } from '../types';
+import { getOneDayOfWeekDaysAndMonthDays, weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
+import { findDropTarget } from '@/utils';
+import { TDate } from '@/types';
 
 const periodViewList = ref<{ [key: string]: { id: number; name: string }[] }>({
   '2023-10-29': [
