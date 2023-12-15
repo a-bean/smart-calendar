@@ -20,6 +20,7 @@ import { computed } from 'vue';
 import { TData, TDate } from '@/types';
 import { convertTo2DArray, generateUUID } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
+import { getTimeInterval } from '@/date';
 
 const props = defineProps<{
   data: (TDate & { dataList?: TData[] })[];
@@ -31,12 +32,22 @@ const formatData = computed(() => {
     for (let j = 0; j < list[i].length - 1; j++) {
       const dataList = list[i][j]?.dataList;
       if (dataList?.length) {
-        console.log(dataList);
-        // TODO:这里需要处理跨日的task
+        dataList.forEach((item) => {
+          const interval = getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' });
+          for (let k = 1; k <= interval; k++) {
+            list[i][j + k].dataList?.unshift({
+              id: generateUUID(),
+              start: '',
+              end: '',
+              name: '',
+            });
+          }
+        });
       }
     }
   }
-  return convertTo2DArray<TDate & { dataList?: TData[] }>(props.data, 7);
+  console.log('list', list);
+  return list;
 });
 </script>
 

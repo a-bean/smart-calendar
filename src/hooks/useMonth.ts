@@ -6,35 +6,33 @@ import { TData, TDate } from '@/types';
 
 const periodViewList = ref<{ [key: string]: TData[] }>({
   '2023-12-04': [
-    { id: 7, name: '吴九', start: '2023-12-04 08:00:00', end: '2023-12-05 09:00:00' },
-    { id: 8, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-05 10:00:00' },
-    { id: 9, name: '吴九', start: '2023-12-04 10:00:00', end: '2023-12-04 11:00:00' },
-    { id: 10, name: '郑十', start: '2023-12-04 11:00:00', end: '2023-12-04 12:00:00' },
-    { id: 11, name: '吴九', start: '2023-12-04 12:00:00', end: '2023-12-04 13:00:00' },
+    { id: 7, name: '吴九', start: '2023-12-03 08:00:00', end: '2023-12-04 09:00:00' },
+    // { id: 8, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-06 10:00:00' },
   ],
-  '2023-12-05': [
-    { id: 27, name: '吴九', start: '2023-12-04 08:00:00', end: '2023-12-05 09:00:00' },
-    { id: 28, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-05 10:00:00' },
-    { id: 29, name: '吴九', start: '2023-12-04 10:00:00', end: '2023-12-04 11:00:00' },
-    { id: 30, name: '郑十', start: '2023-12-04 11:00:00', end: '2023-12-04 12:00:00' },
-    { id: 31, name: '吴九', start: '2023-12-04 12:00:00', end: '2023-12-04 13:00:00' },
-  ],
-  '2023-12-06': [
-    { id: 17, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' },
-    { id: 18, name: '郑十', start: '2023-12-05 09:00:00', end: '2023-12-05 10:00:00' },
-    { id: 19, name: '吴九', start: '2023-12-05 10:00:00', end: '2023-12-05 11:00:00' },
-    { id: 20, name: '郑十', start: '2023-12-05 11:00:00', end: '2023-12-05 12:00:00' },
-    { id: 21, name: '吴九', start: '2023-12-05 12:00:00', end: '2023-12-05 13:00:00' },
-  ],
+  // '2023-12-05': [
+  //   { id: 27, name: '吴九', start: '2023-12-05 08:00:00', end: '2023-12-05 09:00:00' },
+  //   { id: 28, name: '吴九', start: '2023-12-05 08:00:00', end: '2023-12-05 09:00:00' },
+  // ],
+  // '2023-12-06': [
+  //   { id: 17, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' },
+  //   { id: 18, name: '郑十', start: '2023-12-05 09:00:00', end: '2023-12-05 10:00:00' },
+  //   { id: 19, name: '吴九', start: '2023-12-05 10:00:00', end: '2023-12-05 11:00:00' },
+  //   { id: 20, name: '郑十', start: '2023-12-05 11:00:00', end: '2023-12-05 12:00:00' },
+  //   { id: 21, name: '吴九', start: '2023-12-05 12:00:00', end: '2023-12-05 13:00:00' },
+  // ],
+  // '2023-12-07': [{ id: 22, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' }],
 });
+
+const taskBoxWidth = ref<number>(); // 记录任务盒子的宽度
+const taskMouseOffset = ref<number>(); // 记录鼠标在任务盒子中的偏移量
 
 const currentDays = ref<TDate[]>([]);
 const dragData = reactive<{
   targetId: number;
-  targetBox: string | null;
+  targetDate: string | null;
 }>({
   targetId: 0,
-  targetBox: '',
+  targetDate: '',
 });
 
 const selectedTaskId = ref(0);
@@ -92,6 +90,9 @@ export const useMonth = () => {
   });
 
   const onDragStart = (e: DragEvent) => {
+    if (!taskBoxWidth.value) return;
+    taskMouseOffset.value = Math.floor(e.offsetX / taskBoxWidth.value);
+
     dragData.targetId = Number((e.target as Element).getAttribute('data-id'));
   };
 
@@ -100,8 +101,8 @@ export const useMonth = () => {
   };
 
   const onDrop = (e: DragEvent) => {
-    dragData.targetBox = findDropTarget(e.target as HTMLElement);
-    if (!dragData.targetBox) return;
+    dragData.targetDate = findDropTarget(e.target as HTMLElement);
+    if (!dragData.targetDate) return;
 
     // 去掉原来的数据
     for (const key in periodViewList.value) {
@@ -110,10 +111,12 @@ export const useMonth = () => {
       }
     }
     // 添加新的数据
-    if (!periodViewList.value[dragData.targetBox]) {
-      periodViewList.value[dragData.targetBox] = [];
+    const key = getDate({ date: dragData.targetDate, add: -taskMouseOffset.value!, type: 'day', format: 'YYYY-MM-DD' });
+    if (!periodViewList.value[key]) {
+      periodViewList.value[key] = [];
     }
-    periodViewList.value[dragData.targetBox].push({
+
+    periodViewList.value[key].push({
       id: dragData.targetId,
       name: '111',
       start: '2023-12-04 08:00:00',
@@ -122,7 +125,6 @@ export const useMonth = () => {
   };
 
   const selectedTask = (id: number) => {
-    console.log(id);
     selectedTaskId.value = id;
   };
 
@@ -132,6 +134,7 @@ export const useMonth = () => {
     replenishCurrentDays,
     completeData,
     periodViewList,
+    taskBoxWidth,
     // fn
     onDragover,
     onDrop,

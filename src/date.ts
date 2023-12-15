@@ -45,7 +45,7 @@ export const getWeekIndex = (date?: ConfigType, add = 0): number => {
 type TGetDateType = {
   date?: ConfigType;
   add?: number;
-  addType?: ManipulateType;
+  type?: ManipulateType;
   format?: string;
 };
 /**
@@ -55,8 +55,8 @@ type TGetDateType = {
  * @return {string} eg: YYYY-MM-DD
  */
 export const getDate = (config: TGetDateType = {}): string => {
-  const { date, add = 0, addType = 'day', format = 'YYYY-MM-DD' } = config;
-  return dayjs(date).add(add, addType).format(format);
+  const { date, add = 0, type = 'day', format = 'YYYY-MM-DD' } = config;
+  return dayjs(date).add(add, type).format(format);
 };
 
 /**

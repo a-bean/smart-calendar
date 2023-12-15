@@ -52,7 +52,7 @@ export const useDay = () => {
       target.startTime = getDate({
         date: target.startTime,
         add: incrementalTime,
-        addType: 'minute',
+        type: 'minute',
         format: 'YYYY-MM-DD HH:mm:ss',
       });
     }
@@ -61,7 +61,7 @@ export const useDay = () => {
       target.endTime = getDate({
         date: target.endTime,
         add: incrementalTime,
-        addType: 'minute',
+        type: 'minute',
         format: 'YYYY-MM-DD HH:mm:ss',
       });
     }

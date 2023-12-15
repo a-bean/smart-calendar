@@ -21,13 +21,21 @@
         ref="taskRef"
         :key="item.id"
         :data="item"
-        :class="`w${getMonthTaskWidth(item)}00%`"
+        :style="{
+          width: getMonthTaskWidth(item),
+          visibility: typeof item.id === 'string' ? 'hidden' : 'visible',
+          background: getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' }) > 0 ? 'rgba(86, 155, 245,0.5)' : '',
+        }"
       />
       <MonthTask
         v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)"
         :key="item.id"
         :data="item"
-        :class="`w${getMonthTaskWidth(item)}00%`"
+        :style="{
+          width: getMonthTaskWidth(item),
+          visibility: typeof item.id === 'string' ? 'hidden' : 'visible',
+          background: getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' }) > 0 ? 'rgba(86, 155, 245,0.5)' : '',
+        }"
       />
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
     </div>
@@ -40,14 +48,15 @@ import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
 import { getDate, getTimeInterval } from '@/date';
 
-const { onDrop, onDragover } = useMonth();
+const { onDrop, onDragover, taskBoxWidth } = useMonth();
 
 const props = defineProps<{
   data: TDate & { dataList?: TData[] };
 }>();
 
 const getMonthTaskWidth = (data: TData) => {
-  return getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }) + 1;
+  const interval = getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' });
+  return `calc(${interval + 1}00% + ${interval}px)`;
 };
 
 const cutDay = (day: string) => (day.slice(-2).startsWith('0') ? day.slice(-1) : day.slice(-2));
@@ -65,7 +74,9 @@ const surplusTaskCount = computed(() => {
   return 0;
 });
 
-const getTaskBoxClientHeight = () => {
+const onTaskBoxResize = () => {
+  taskBoxWidth.value = boxRef.value?.clientWidth; // 记录月视图每个日期的宽度
+
   const boxHeight = boxRef.value?.clientHeight;
   const titleHeight = titleRef.value?.clientHeight;
   if (!boxHeight || !titleHeight) return;
@@ -83,21 +94,21 @@ watch(
   () => {
     console.log('监测taskList变化');
     timer = setTimeout(() => {
-      getTaskBoxClientHeight();
+      onTaskBoxResize();
     });
   }
 );
 
 nextTick(() => {
-  getTaskBoxClientHeight();
+  onTaskBoxResize();
 });
 
 onMounted(() => {
-  window.addEventListener('resize', getTaskBoxClientHeight);
+  window.addEventListener('resize', onTaskBoxResize);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('resize', getTaskBoxClientHeight);
+  window.removeEventListener('resize', onTaskBoxResize);
   clearTimeout(timer);
 });
 </script>
