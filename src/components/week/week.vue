@@ -31,6 +31,6 @@ onUnmounted(() => {
 </script>
 <style>
 .week {
-  --uno: w100% h100% flex flex-col select-none;
+  @apply w100% h100% flex flex-col select-none;
 }
 </style>

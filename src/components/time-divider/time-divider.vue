@@ -19,6 +19,6 @@ const props = defineProps<{
 
 <style>
 .time-divider {
-  --uno: w100% b-t-solid b-t b-#ccc box-border b-#ccc;
+  @apply w100% b-t-solid b-t b-#ccc box-border b-#ccc;
 }
 </style>

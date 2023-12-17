@@ -30,9 +30,9 @@ const onClick = (e: Event) => {
 </script>
 <style>
 .radio-group {
-  --uno: inline-block cursor-pointer select-none;
+  @apply inline-block cursor-pointer select-none;
 }
 .radio-group-item-box {
-  --uno: flex justify-center flex-items-center b-1 b-#ccc border-rd b-solid;
+  @apply flex justify-center flex-items-center b-1 b-#ccc border-rd b-solid;
 }
 </style>

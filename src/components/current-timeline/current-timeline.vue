@@ -33,6 +33,6 @@ onUnmounted(() => {
 
 <style>
 .current-timeline {
-  --uno: h1px bg-red font-size-2 text-right;
+  @apply h1px bg-red font-size-2 text-right;
 }
 </style>

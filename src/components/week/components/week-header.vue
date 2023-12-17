@@ -21,6 +21,6 @@ import { weeks } from '@/date';
 
 <style>
 .month-header-item {
-  --uno: ;
+  @apply;
 }
 </style>

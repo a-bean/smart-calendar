@@ -62,10 +62,10 @@ const height = computed(() => {
 </script>
 <style>
 .day-task {
-  --uno: w100% bg-blue bg-opacity-60 b-rd-2 font-size-3 color-white b-l-solid b-l-4 b-blue box-border position-absolute;
+  @apply w100% bg-blue bg-opacity-60 b-rd-2 font-size-3 color-white b-l-solid b-l-4 b-blue box-border position-absolute;
 }
 
 .day-drag-line {
-  --uno: h1 w100% position-absolute cursor-row-resize;
+  @apply h1 w100% position-absolute cursor-row-resize;
 }
 </style>

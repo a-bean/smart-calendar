@@ -12,6 +12,6 @@ import { ONE_HOUR_HEIGHT } from '@/config';
 
 <style>
 .time-scale {
-  --uno: h8% b-t-solid b-t-1 b-transparent text-right font-size-3 flex flex-col justify-between box-border;
+  @apply h8% b-t-solid b-t-1 b-transparent text-right font-size-3 flex flex-col justify-between box-border;
 }
 </style>

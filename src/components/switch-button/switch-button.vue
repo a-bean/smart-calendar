@@ -26,15 +26,15 @@ const emitter = defineEmits<{
 
 <style>
 .switch-container {
-  --uno: h5 flex cursor-pointer flex-items-center select-none;
+  @apply h5 flex cursor-pointer flex-items-center select-none;
 }
 
 .switch-btn {
-  --uno: h5 w5 flex justify-center flex-items-center
+  @apply h5 w5 flex justify-center flex-items-center
          b b-color-#ccc border-rd-1.2 b-solid hover:bg-gray active:bg-#e6e6e6;
 }
 
 .switch-btn-today {
-  --uno: ml-1px mr-1px w12 text-center font-size-3 line-height-5
+  @apply ml-1px mr-1px w12 text-center font-size-3 line-height-5;
 }
 </style>

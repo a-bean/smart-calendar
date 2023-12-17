@@ -115,18 +115,18 @@ onUnmounted(() => {
 
 <style>
 .month-body-item {
-  --uno: h100% flex flex-col position-relative;
+  @apply h100% flex flex-col position-relative;
 }
 .month-body-item-title {
-  --uno: h6 flex flex-justify-between flex-items-center font-size-3.5 p2 pb0;
+  @apply h6 flex flex-justify-between flex-items-center font-size-3.5 p2 pb0;
 }
 .month-body-item-is-today {
-  --uno: inline-block h6 w6 border-rd-50% line-height-6 color-#fff bg-red text-center;
+  @apply inline-block h6 w6 border-rd-50% line-height-6 color-#fff bg-red text-center;
 }
 .month-body-item-list {
-  --uno: flex-1 mt1;
+  @apply flex-1 mt1;
 }
 .month-body-item-list-surplus {
-  --uno: font-size-2.8 pl-2 pr-2;
+  @apply font-size-2.8 pl-2 pr-2;
 }
 </style>

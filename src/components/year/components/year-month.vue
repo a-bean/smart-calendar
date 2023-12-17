@@ -73,29 +73,29 @@ const replenishCurrentDays = computed((): TYearDate[][] => {
 </script>
 <style>
 .year-month {
-  --uno: h100% w100% p2 flex flex-col;
+  @apply h100% w100% p2 flex flex-col;
 }
 
 .year-month-title {
-  --uno: color-red h6;
+  @apply color-red h6;
 }
 
 .year-month-body {
-  --uno: flex-1 font-size-3.5 flex flex-col;
+  @apply flex-1 font-size-3.5 flex flex-col;
 }
 
 .year-month-header {
-  --uno: w100% flex justify-between mb-4 mt-4;
+  @apply w100% flex justify-between mb-4 mt-4;
 }
 .year-month-header-item {
-  --uno: font-size-3.6;
+  @apply font-size-3.6;
 }
 
 .year-month-content {
-  --uno: flex-1 flex flex-col justify-between;
+  @apply flex-1 flex flex-col justify-between;
 }
 
 .year-month-content-row {
-  --uno: flex justify-between flex-content-between;
+  @apply flex justify-between flex-content-between;
 }
 </style>

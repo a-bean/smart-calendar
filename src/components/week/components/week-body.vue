@@ -18,6 +18,6 @@ const mouseenter = (e: Event) => {
 </script>
 <style>
 .week-body-items {
-  --uno: flex-1 flex h100%;
+  @apply flex-1 flex h100%;
 }
 </style>

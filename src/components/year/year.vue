@@ -14,6 +14,6 @@ const yearDates = ref(getYearDates());
 </script>
 <style>
 .year {
-  --uno: h100% w100% grid grid-cols-4 grid-rows-3 gap-4%;
+  @apply h100% w100% grid grid-cols-4 grid-rows-3 gap-4%;
 }
 </style>

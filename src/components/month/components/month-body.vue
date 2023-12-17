@@ -53,13 +53,13 @@ const formatData = computed(() => {
 
 <style>
 .month-body {
-  --uno: h100% flex flex-col;
+  @apply h100% flex flex-col;
 }
 .month-body-box {
-  --uno: flex flex-1 b-t-1 b-t-#ccc b-t-solid overflow-hidden;
+  @apply flex flex-1 b-t-1 b-t-#ccc b-t-solid overflow-hidden;
 }
 .month-body-item-box {
-  --uno: flex-1 b-r-1 b-r-#ccc b-r-solid box-border h100% w100%;
+  @apply flex-1 b-r-1 b-r-#ccc b-r-solid box-border h100% w100%;
 }
 </style>
 @/calendar/types
