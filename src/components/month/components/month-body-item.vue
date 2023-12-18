@@ -92,7 +92,7 @@ let timer: NodeJS.Timeout;
 watch(
   () => props.data.dataList,
   () => {
-    console.log('监测taskList变化');
+    // console.log('监测taskList变化');
     timer = setTimeout(() => {
       onTaskBoxResize();
     });

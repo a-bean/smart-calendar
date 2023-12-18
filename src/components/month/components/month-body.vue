@@ -16,7 +16,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, watch, ref } from 'vue';
+import { computed } from 'vue';
 import { TData, TDate } from '@/types';
 import { convertTo2DArray } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
@@ -26,40 +26,8 @@ const props = defineProps<{
   data: (TDate & { dataList: TData[] })[];
 }>();
 
-const ddd = ref<(TDate & { dataList: TData[] })[][]>();
-
-const formatData1 = () => {
-  const list = convertTo2DArray<TDate & { dataList: TData[] }>(props.data, 7);
-  for (let i = 0; i < list.length; i++) {
-    for (let j = 0; j < list[i].length; j++) {
-      const { dataList } = list[i][j];
-      if (dataList) {
-        for (let k = 0; k < dataList.length; k++) {
-          const { start, end } = dataList[k];
-          const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
-          const offset = 7 - j;
-          if (interval > offset && i < 5) {
-            list[i + 1][0].dataList.push(dataList[k]);
-          }
-        }
-      }
-    }
-  }
-  ddd.value = list;
-  // return list;
-};
-
-watch(
-  () => props.data,
-  () => {
-    formatData1();
-  }
-);
-
 const formatData = computed(() => {
   const list = convertTo2DArray<TDate & { dataList: TData[] }>(props.data, 7);
-  console.log('000', list);
-
   for (let i = 0; i < list.length; i++) {
     for (let j = 0; j < list[i].length; j++) {
       const { dataList } = list[i][j];
@@ -69,7 +37,6 @@ const formatData = computed(() => {
         const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
         const offset = 7 - j;
         if (interval > offset && i < 5) {
-          console.log('push');
           list[i + 1][0].dataList.push(dataList[k]);
         }
       }
