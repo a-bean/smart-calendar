@@ -46,7 +46,7 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import { TData, TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
-import { getDate, getTimeInterval } from '@/date';
+import { getDate, getTimeInterval, getWeekIndex } from '@/date';
 
 const { onDrop, onDragover, taskBoxWidth } = useMonth();
 
@@ -55,7 +55,7 @@ const props = defineProps<{
 }>();
 
 const getMonthTaskWidth = (data: TData) => {
-  const interval = getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' });
+  const interval = Math.min(getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }), 6 - getWeekIndex(data.start));
   return `calc(${interval + 1}00% + ${interval}px)`;
 };
 

@@ -20,7 +20,7 @@ import { computed } from 'vue';
 import { TData, TDate } from '@/types';
 import { convertTo2DArray } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
-import { getTimeInterval } from '@/date';
+import { getTimeInterval, getDate } from '@/date';
 
 const props = defineProps<{
   data: (TDate & { dataList: TData[] })[];
@@ -37,7 +37,10 @@ const formatData = computed(() => {
         const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
         const offset = 7 - j;
         if (interval > offset && i < 5) {
-          list[i + 1][0].dataList.push(dataList[k]);
+          list[i + 1][0].dataList.push({
+            ...dataList[k],
+            start: getDate({ date: start, add: offset }),
+          });
         }
       }
     }
