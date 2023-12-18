@@ -16,37 +16,66 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { TData, TDate } from '@/types';
-import { convertTo2DArray, generateUUID } from '@/utils';
+import { convertTo2DArray } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
 import { getTimeInterval } from '@/date';
 
 const props = defineProps<{
-  data: (TDate & { dataList?: TData[] })[];
+  data: (TDate & { dataList: TData[] })[];
 }>();
 
-const formatData = computed(() => {
-  const list = convertTo2DArray<TDate & { dataList?: TData[] }>(props.data, 7);
+const ddd = ref<(TDate & { dataList: TData[] })[][]>();
+
+const formatData1 = () => {
+  const list = convertTo2DArray<TDate & { dataList: TData[] }>(props.data, 7);
   for (let i = 0; i < list.length; i++) {
-    for (let j = 0; j < list[i].length - 1; j++) {
-      const dataList = list[i][j]?.dataList;
-      if (dataList?.length) {
-        dataList.forEach((item) => {
-          const interval = getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' });
-          for (let k = 1; k <= interval; k++) {
-            list[i][j + k].dataList?.unshift({
-              id: generateUUID(),
-              start: '',
-              end: '',
-              name: '',
-            });
+    for (let j = 0; j < list[i].length; j++) {
+      const { dataList } = list[i][j];
+      if (dataList) {
+        for (let k = 0; k < dataList.length; k++) {
+          const { start, end } = dataList[k];
+          const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
+          const offset = 7 - j;
+          if (interval > offset && i < 5) {
+            list[i + 1][0].dataList.push(dataList[k]);
           }
-        });
+        }
       }
     }
   }
-  console.log('list', list);
+  ddd.value = list;
+  // return list;
+};
+
+watch(
+  () => props.data,
+  () => {
+    formatData1();
+  }
+);
+
+const formatData = computed(() => {
+  const list = convertTo2DArray<TDate & { dataList: TData[] }>(props.data, 7);
+  console.log('000', list);
+
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 0; j < list[i].length; j++) {
+      const { dataList } = list[i][j];
+      if (!dataList) continue;
+      for (let k = 0; k < dataList.length; k++) {
+        const { start, end } = dataList[k];
+        const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
+        const offset = 7 - j;
+        if (interval > offset && i < 5) {
+          console.log('push');
+          list[i + 1][0].dataList.push(dataList[k]);
+        }
+      }
+    }
+  }
+  console.log('list11', list);
   return list;
 });
 </script>

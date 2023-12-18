@@ -10,7 +10,7 @@
       <!-- 刻度 -->
       <TimeScale class="w15" />
       <!-- 任务区域 -->
-      <dayBody :data="mokeData" />
+      <dayBody :data="mockData" />
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ import { useDay } from '@/hooks/useDay';
 import TimeScale from '@/components/time-scale/time-scale.vue';
 import dayBody from './components/day-body.vue';
 
-const { mokeData } = useDay();
+const { mockData } = useDay();
 </script>
 
 <style>

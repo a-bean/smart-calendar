@@ -34,6 +34,7 @@ export const weekthMap = new Map([
  * @function: getWeekIndex
  * @description: 放回星期的索引
  * @param {string} date
+ * @param add
  * @return {number}
  */
 export const getWeekIndex = (date?: ConfigType, add = 0): number => {
@@ -76,8 +77,7 @@ export const isFirstDayOfMonth = (inputDate: ConfigType): boolean => {
  * @returns string 农历日期
  */
 export const getLunarDay = (date: ConfigType) => {
-  const lunar = lunisolar(date as lunisolar.DateConfigType).lunar.getDayName();
-  return lunar;
+  return lunisolar(date as lunisolar.DateConfigType).lunar.getDayName();
 };
 /**
  * @description: 获取某一天的中国农历信息
@@ -85,8 +85,7 @@ export const getLunarDay = (date: ConfigType) => {
  * @returns string 农历月份
  */
 export const getLunarMonth = (date: ConfigType) => {
-  const lunar = lunisolar(date as lunisolar.DateConfigType).lunar.getMonthName();
-  return lunar;
+  return lunisolar(date as lunisolar.DateConfigType).lunar.getMonthName();
 };
 
 /**
@@ -112,13 +111,17 @@ const formatDays = (days: string[]): TDate[] => {
 };
 
 /**
- * @function getOneDayOfWeekDaysAndMonthDays
+ * @function getDaysScope
  * @description: 获取某一天（默认为当前日期）当前周一周的日期/当前月的日期
- * @param {{ type?: 'week' | 'month'; day?: ConfigType; add?: number }}
+ * @param {{ type?: 'week' | 'month'; day?: ConfigType; add?: number }} params
  * @return {TDate[]}
  */
-export const getOneDayOfWeekDaysAndMonthDays = (params: { type?: 'week' | 'month'; date?: ConfigType; add?: number } = {}): TDate[] => {
+export const getDaysScope = (params: { type?: 'week' | 'month' | 'day'; date?: ConfigType; add?: number } = {}): TDate[] => {
   const { type = 'week', date = new Date(), add = 0 } = params;
+
+  if (type === 'day') {
+    return formatDays([dayjs(date).add(add, 'day').format('YYYY-MM-DD'), dayjs(date).add(add, 'day').format('YYYY-MM-DD')]);
+  }
   const weekStart = dayjs(date).startOf(type).add(add, type);
   const weekEnd = dayjs(date).endOf(type).add(add, type);
 
@@ -136,7 +139,7 @@ export const getOneDayOfWeekDaysAndMonthDays = (params: { type?: 'week' | 'month
 /**
  * @function getWeekthOfMonth
  * @description: 获取某一天（默认为当前日期）当前月的周数
- * @param {ConfigType} day
+ * @param {ConfigType} date
  * @return {number}
  */
 export const getWeekthOfMonth = (date?: ConfigType): number => {

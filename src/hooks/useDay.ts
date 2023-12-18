@@ -5,7 +5,7 @@ import { getTimeInterval, getDate } from '@/date';
 const MIN_HEIGHT = 15;
 const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
-const mokeData = ref([
+const mockData = ref([
   {
     id: 2,
     title: '新建日程',
@@ -39,7 +39,7 @@ export const useDay = () => {
   const mousemove = (e: MouseEvent) => {
     console.log('mousemove');
     if (!isDragging) return;
-    const target = mokeData.value.find((item) => item.id === targetId)!;
+    const target = mockData.value.find((item) => item.id === targetId)!;
 
     const everyPxOfMinute = (taskBodyHeight.value * 0.08) / 60;
     const incrementalTime = everyPxOfMinute * (e.clientY - initialY);
@@ -95,7 +95,7 @@ export const useDay = () => {
 
   return {
     taskBodyHeight,
-    mokeData,
+    mockData,
     selectedTask,
     selectedTaskId,
     mousedown,

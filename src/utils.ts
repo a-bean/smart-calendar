@@ -34,11 +34,27 @@ export const findDropTarget = (element: HTMLElement): string | null => {
   // 如果未找到 #dropTarget，返回 null
   return null;
 };
-
+/**
+ * @function : generateUUID
+ * @description : 生成一个uuid
+ * @return {string}
+ */
 export const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.floor(Math.random() * 16);
     const v = c === 'x' ? r : (r % 4) + 8;
     return v.toString(16);
   });
+};
+
+/**
+ * @function : typeOf
+ * @description : 返回数据类型
+ * @param {unknown} obj
+ * @return {string}
+ */
+export const typeOf = (obj: unknown): string => {
+  let res = Object.prototype.toString.call(obj).split(' ')[1];
+  res = res.substring(0, res.length - 1).toLowerCase();
+  return res;
 };

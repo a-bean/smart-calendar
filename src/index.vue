@@ -23,9 +23,14 @@ import SwitchButton from './components/switch-button/switch-button.vue';
 import HeaderTitle from './components/header-title/header-title.vue';
 import Year from './components/year/year.vue';
 import { useStore } from './hooks/useStore';
-import { ECalendarType } from './types';
+import { ECalendarType, TData } from './types';
+import { useMonth } from '@/hooks/useMonth';
+import { defineEmits, onUpdated, watch } from 'vue';
+import { typeOf } from '@/utils';
 
-const { store } = useStore();
+const { replenishCurrentDays } = useMonth();
+
+const { store, getData } = useStore();
 
 const typeMap = {
   [ECalendarType.DAY]: '日',
@@ -33,4 +38,25 @@ const typeMap = {
   [ECalendarType.MONTH]: '月',
   [ECalendarType.YEAR]: '年',
 };
+
+const props = defineProps<{ data: { [key: string]: TData[] } }>();
+onUpdated(() => {
+  getData(props.data);
+});
+
+// emitter
+const emitter = defineEmits<{
+  (event: 'getDateScope', scope: [string, string]): void;
+}>();
+
+watch(
+  () => store.value.currentDays,
+  () => {
+    if (store.value.calendarVisible === ECalendarType.MONTH) {
+      emitter('getDateScope', [replenishCurrentDays.value[0].date, replenishCurrentDays.value[replenishCurrentDays.value.length - 1].date]);
+    } else {
+      emitter('getDateScope', [store.value.currentDays[0].date, store.value.currentDays[store.value.currentDays.length - 1].date]);
+    }
+  }
+);
 </script>

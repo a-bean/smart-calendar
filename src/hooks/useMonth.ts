@@ -2,31 +2,13 @@ import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
 import { findDropTarget } from '@/utils';
-import { TData, TDate } from '@/types';
+import { TDate } from '@/types';
+import { useStore } from '@/hooks/useStore';
 
-const periodViewList = ref<{ [key: string]: TData[] }>({
-  '2023-12-04': [
-    { id: 7, name: '吴九', start: '2023-12-03 08:00:00', end: '2023-12-04 09:00:00' },
-    // { id: 8, name: '郑十', start: '2023-12-04 09:00:00', end: '2023-12-06 10:00:00' },
-  ],
-  // '2023-12-05': [
-  //   { id: 27, name: '吴九', start: '2023-12-05 08:00:00', end: '2023-12-05 09:00:00' },
-  //   { id: 28, name: '吴九', start: '2023-12-05 08:00:00', end: '2023-12-05 09:00:00' },
-  // ],
-  // '2023-12-06': [
-  //   { id: 17, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' },
-  //   { id: 18, name: '郑十', start: '2023-12-05 09:00:00', end: '2023-12-05 10:00:00' },
-  //   { id: 19, name: '吴九', start: '2023-12-05 10:00:00', end: '2023-12-05 11:00:00' },
-  //   { id: 20, name: '郑十', start: '2023-12-05 11:00:00', end: '2023-12-05 12:00:00' },
-  //   { id: 21, name: '吴九', start: '2023-12-05 12:00:00', end: '2023-12-05 13:00:00' },
-  // ],
-  // '2023-12-07': [{ id: 22, name: '吴九', start: '2023-12-06 08:00:00', end: '2023-12-07 09:00:00' }],
-});
-
+const { store } = useStore();
 const taskBoxWidth = ref<number>(); // 记录任务盒子的宽度
 const taskMouseOffset = ref<number>(); // 记录鼠标在任务盒子中的偏移量
 
-const currentDays = ref<TDate[]>([]);
 const dragData = reactive<{
   targetId: number;
   targetDate: string | null;
@@ -40,8 +22,8 @@ const selectedTaskId = ref(0);
 export const useMonth = () => {
   /** 填满日历 */
   const replenishCurrentDays = computed((): TDate[] => {
-    if (!currentDays.value.length) return [];
-    const newDays = cloneDeep(currentDays.value);
+    if (!store.value.currentDays.length) return [];
+    const newDays = cloneDeep(store.value.currentDays);
 
     // 补全前面的日期
     while (newDays[0].weekIndex !== 0) {
@@ -84,7 +66,7 @@ export const useMonth = () => {
     return replenishCurrentDays.value.map((item) => {
       return {
         ...item,
-        dataList: periodViewList.value[item.date],
+        dataList: store.value.data[item.date] || [],
       };
     });
   });
@@ -105,18 +87,18 @@ export const useMonth = () => {
     if (!dragData.targetDate) return;
 
     // 去掉原来的数据
-    for (const key in periodViewList.value) {
-      if (periodViewList.value[key] && periodViewList.value[key].some((item) => item.id === dragData.targetId)) {
-        periodViewList.value[key] = periodViewList.value[key].filter((item) => item.id !== dragData.targetId);
+    for (const key in store.value.data) {
+      if (store.value.data[key] && store.value.data[key].some((item) => item.id === dragData.targetId)) {
+        store.value.data[key] = store.value.data[key].filter((item) => item.id !== dragData.targetId);
       }
     }
     // 添加新的数据
     const key = getDate({ date: dragData.targetDate, add: -taskMouseOffset.value!, type: 'day', format: 'YYYY-MM-DD' });
-    if (!periodViewList.value[key]) {
-      periodViewList.value[key] = [];
+    if (!store.value.data[key]) {
+      store.value.data[key] = [];
     }
 
-    periodViewList.value[key].push({
+    store.value.data[key].push({
       id: dragData.targetId,
       name: '111',
       start: '2023-12-04 08:00:00',
@@ -130,10 +112,8 @@ export const useMonth = () => {
 
   return {
     // data
-    currentDays,
     replenishCurrentDays,
     completeData,
-    periodViewList,
     taskBoxWidth,
     // fn
     onDragover,
