@@ -56,7 +56,16 @@ const props = defineProps<{
 }>();
 
 const getMonthTaskWidth = (data: TData) => {
-  const interval = Math.min(getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }), 6 - getWeekIndex(data.start));
+  const currentFragmentStart =
+    getTimeInterval({ bigDate: data.start, smallDate: props.data.date, unit: 'day' }) < 0 ? props.data.date : data.start;
+
+  const interval = Math.min(
+    getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }),
+    6 - getWeekIndex(currentFragmentStart)
+  );
+
+  console.log(getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }));
+  console.log(6 - getWeekIndex(data.start));
   return `calc(${interval + 1}00% + ${interval}px)`;
 };
 
@@ -93,7 +102,7 @@ let timer: NodeJS.Timeout;
 watch(
   () => props.data.dataList,
   () => {
-    // console.log('监测taskList变化');
+    console.log('监测taskList变化');
     timer = setTimeout(() => {
       onTaskBoxResize();
     });

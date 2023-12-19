@@ -73,7 +73,7 @@ export const useMonth = () => {
     return newDays;
   });
 
-  /** 整合后的数据 */
+  /** 整合task后的数据 */
   const completeData = computed(() => {
     return replenishCurrentDays.value.map((item) => {
       return {
@@ -82,26 +82,27 @@ export const useMonth = () => {
       };
     });
   });
-
+  /** 对completeData的数据进行跨日期处理 */
   const formatData = computed(() => {
     const list = convertTo2DArray<TDate & { dataList: TData[] }>(completeData.value, 7);
-    for (let i = 0; i < list.length; i++) {
-      for (let j = 0; j < list[i].length; j++) {
-        const { dataList } = list[i][j];
-        if (!dataList) continue;
-        for (let k = 0; k < dataList.length; k++) {
-          const { start, end } = dataList[k];
-          const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
-          const offset = 7 - j;
-          if (interval > offset && i < 5) {
-            list[i + 1][0].dataList.push({
-              ...dataList[k],
-              start: getDate({ date: start, add: offset }),
-            });
-          }
-        }
-      }
-    }
+    // for (let i = 0; i < list.length; i++) {
+    //   for (let j = 0; j < list[i].length; j++) {
+    //     const { dataList } = list[i][j];
+    //     if (!dataList) continue;
+    //     for (let k = 0; k < dataList.length; k++) {
+    //       const { start, end } = dataList[k];
+    //       const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
+    //       const offset = 7 - j;
+    //       if (interval > offset && i < 5) {
+    //         list[i + 1][0].dataList.push({
+    //           ...dataList[k],
+    //           start: getDate({ date: start, add: offset }),
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
+    console.log('lll', list);
     return list;
   });
 
@@ -121,6 +122,7 @@ export const useMonth = () => {
 
   const onDrop = (e: DragEvent) => {
     dragData.targetDate = findDropTargetDate(e.target as HTMLElement);
+    console.log(dragData);
     if (!dragData.targetDate) return;
 
     // 去掉原来的数据
@@ -136,13 +138,12 @@ export const useMonth = () => {
       smallDate: getDate({ date: dragData.targetTask!.start, format: 'YYYY-MM-DD' }),
       unit: 'day',
     });
+
     /** 鼠标点击的位置离这条task的start的偏移天数 */
     const clickOffset = interval + dragData.offset;
     // 添加新的数据
     const key = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
     const taskOffset = getTimeInterval({ bigDate: key, smallDate: dragData.targetTask!.start, unit: 'day' });
-    console.log(dragData.targetTask!.end, taskOffset);
-    console.log(getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }));
     if (!store.value.data[key]) {
       store.value.data[key] = [];
     }
@@ -159,8 +160,6 @@ export const useMonth = () => {
   const selectedTask = (id: number) => {
     selectedTaskId.value = id;
   };
-
-  const a = [[{ list: [{ id: 1 }, { id: 9 }] }], [{ list: [{ id: 2 }] }]];
 
   return {
     // data

@@ -16,7 +16,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { TData, TDate } from '@/types';
 import MonthBodyItem from './month-body-item.vue';
 import { useMonth } from '@/hooks/useMonth';
 

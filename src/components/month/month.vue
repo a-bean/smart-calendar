@@ -9,10 +9,8 @@ import { onMounted } from 'vue';
 import MonthHeader from './components/month-header.vue';
 import MonthBody from './components/month-body.vue';
 import { getDaysScope } from '@/date';
-import { useMonth } from '@/hooks/useMonth';
 import { useStore } from '@/hooks/useStore';
 
-const { completeData } = useMonth();
 const { store } = useStore();
 
 onMounted(() => {
