@@ -1,3 +1,5 @@
+import { TData, TDate } from '@/types';
+
 /**
  * @function: convertTo2DArray
  * @description: 将一个数组分成多个指定大小的块
@@ -19,7 +21,7 @@ export const convertTo2DArray = <T>(arr: T[], chunkSize: number): T[][] => {
  * @param {HTMLElement} element
  * @return {string | null}
  */
-export const findDropTarget = (element: HTMLElement): string | null => {
+export const findDropTargetDate = (element: HTMLElement): string | null => {
   // 检查当前元素是否是 #dropTarget 或其子元素
   if (element.getAttribute('data-date')) {
     return element.getAttribute('data-date');
@@ -57,4 +59,29 @@ export const typeOf = (obj: unknown): string => {
   let res = Object.prototype.toString.call(obj).split(' ')[1];
   res = res.substring(0, res.length - 1).toLowerCase();
   return res;
+};
+
+export const findTaskById = (idToFind: number, data: { [key: string]: TData[] }) => {
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const objects = data[key];
+      const foundObject = objects.find((obj) => obj.id === idToFind);
+      if (foundObject) {
+        return foundObject;
+      }
+    }
+  }
+  return null;
+};
+
+export const countItemsWithId = (idToCount: number, data: (TDate & { dataList: TData[] })[][]): number => {
+  let count = 0;
+  data.flat().forEach((item) => {
+    item.dataList.forEach((d) => {
+      if (d.id === idToCount) {
+        count++;
+      }
+    });
+  });
+  return count;
 };

@@ -1,20 +1,32 @@
 import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth } from '@/date';
-import { findDropTarget } from '@/utils';
-import { TDate } from '@/types';
+import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth, getTimeInterval } from '@/date';
+import { convertTo2DArray, findDropTargetDate, findTaskById } from '@/utils';
+import { TData, TDate } from '@/types';
 import { useStore } from '@/hooks/useStore';
 
 const { store } = useStore();
 const taskBoxWidth = ref<number>(); // 记录任务盒子的宽度
-const taskMouseOffset = ref<number>(); // 记录鼠标在任务盒子中的偏移量
 
 const dragData = reactive<{
+  /** 选中的task的id */
   targetId: number;
+  /** 鼠标移动停止所有在日期 */
   targetDate: string | null;
+  /** 选中的task */
+  targetTask: TData | null;
+  /** 选中的task片段的开始时间 */
+  targetFragmentStart: string;
+  /** 选中的task片段的结束时间 */
+  targetEnd: string;
+  offset: number;
 }>({
   targetId: 0,
   targetDate: '',
+  targetTask: null,
+  offset: 0,
+  targetFragmentStart: '',
+  targetEnd: '',
 });
 
 const selectedTaskId = ref(0);
@@ -61,7 +73,7 @@ export const useMonth = () => {
     return newDays;
   });
 
-  /** 完整的数据 */
+  /** 整合后的数据 */
   const completeData = computed(() => {
     return replenishCurrentDays.value.map((item) => {
       return {
@@ -71,11 +83,36 @@ export const useMonth = () => {
     });
   });
 
-  const onDragStart = (e: DragEvent) => {
-    if (!taskBoxWidth.value) return;
-    taskMouseOffset.value = Math.floor(e.offsetX / taskBoxWidth.value);
+  const formatData = computed(() => {
+    const list = convertTo2DArray<TDate & { dataList: TData[] }>(completeData.value, 7);
+    for (let i = 0; i < list.length; i++) {
+      for (let j = 0; j < list[i].length; j++) {
+        const { dataList } = list[i][j];
+        if (!dataList) continue;
+        for (let k = 0; k < dataList.length; k++) {
+          const { start, end } = dataList[k];
+          const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
+          const offset = 7 - j;
+          if (interval > offset && i < 5) {
+            list[i + 1][0].dataList.push({
+              ...dataList[k],
+              start: getDate({ date: start, add: offset }),
+            });
+          }
+        }
+      }
+    }
+    return list;
+  });
 
-    dragData.targetId = Number((e.target as Element).getAttribute('data-id'));
+  const onDragStart = (e: DragEvent, data?: TData) => {
+    if (!taskBoxWidth.value || !data) return;
+
+    dragData.targetFragmentStart = data.start;
+    dragData.targetEnd = data.end;
+    dragData.targetId = data.id as number;
+    dragData.offset = Math.floor(e.offsetX / taskBoxWidth.value);
+    dragData.targetTask = findTaskById(dragData.targetId, store.value.data);
   };
 
   const onDragover = (e: DragEvent) => {
@@ -83,7 +120,7 @@ export const useMonth = () => {
   };
 
   const onDrop = (e: DragEvent) => {
-    dragData.targetDate = findDropTarget(e.target as HTMLElement);
+    dragData.targetDate = findDropTargetDate(e.target as HTMLElement);
     if (!dragData.targetDate) return;
 
     // 去掉原来的数据
@@ -92,28 +129,44 @@ export const useMonth = () => {
         store.value.data[key] = store.value.data[key].filter((item) => item.id !== dragData.targetId);
       }
     }
+
+    /** 当前task片段的start与task的start的偏移天数 */
+    const interval = getTimeInterval({
+      bigDate: dragData.targetFragmentStart,
+      smallDate: getDate({ date: dragData.targetTask!.start, format: 'YYYY-MM-DD' }),
+      unit: 'day',
+    });
+    /** 鼠标点击的位置离这条task的start的偏移天数 */
+    const clickOffset = interval + dragData.offset;
     // 添加新的数据
-    const key = getDate({ date: dragData.targetDate, add: -taskMouseOffset.value!, type: 'day', format: 'YYYY-MM-DD' });
+    const key = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
+    const taskOffset = getTimeInterval({ bigDate: key, smallDate: dragData.targetTask!.start, unit: 'day' });
+    console.log(dragData.targetTask!.end, taskOffset);
+    console.log(getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }));
     if (!store.value.data[key]) {
       store.value.data[key] = [];
     }
 
-    store.value.data[key].push({
+    const newItem = {
       id: dragData.targetId,
-      name: '111',
-      start: '2023-12-04 08:00:00',
-      end: '2023-12-05 09:00:00',
-    });
+      name: dragData.targetTask!.name,
+      start: key,
+      end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }),
+    };
+    store.value.data[key].push(newItem);
   };
 
   const selectedTask = (id: number) => {
     selectedTaskId.value = id;
   };
 
+  const a = [[{ list: [{ id: 1 }, { id: 9 }] }], [{ list: [{ id: 2 }] }]];
+
   return {
     // data
     replenishCurrentDays,
     completeData,
+    formatData,
     taskBoxWidth,
     // fn
     onDragover,

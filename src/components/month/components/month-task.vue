@@ -3,9 +3,8 @@
     class="month-task"
     :class="{ 'bg-blue color-white': props.data?.id === selectedTaskId }"
     draggable="true"
-    :data-id="props.data?.id"
     @click="selectedTask(props.data!.id as number)"
-    @dragstart="onDragStart"
+    @dragstart="(e) => onDragStart(e, props.data)"
   >
     <div class="flex flex-items-center">
       <div class="month-task-point" :class="{ ' bg-white': props.data?.id === selectedTaskId }"></div>

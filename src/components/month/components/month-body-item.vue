@@ -24,7 +24,7 @@
         :style="{
           width: getMonthTaskWidth(item),
           visibility: typeof item.id === 'string' ? 'hidden' : 'visible',
-          background: getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' }) > 0 ? 'rgba(86, 155, 245,0.5)' : '',
+          background: countItemsWithId(item.id as number, formatData) ? 'rgba(86, 155, 245, 0.5)' : '',
         }"
       />
       <MonthTask
@@ -34,7 +34,7 @@
         :style="{
           width: getMonthTaskWidth(item),
           visibility: typeof item.id === 'string' ? 'hidden' : 'visible',
-          background: getTimeInterval({ bigDate: item.end, smallDate: item.start, unit: 'day' }) > 0 ? 'rgba(86, 155, 245,0.5)' : '',
+          background: countItemsWithId(item.id as number, formatData) ? 'rgba(86, 155, 245, 0.5)' : '',
         }"
       />
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
@@ -47,8 +47,9 @@ import { TData, TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
 import { getDate, getTimeInterval, getWeekIndex } from '@/date';
+import { countItemsWithId } from '@/utils';
 
-const { onDrop, onDragover, taskBoxWidth } = useMonth();
+const { onDrop, onDragover, taskBoxWidth, formatData } = useMonth();
 
 const props = defineProps<{
   data: TDate & { dataList?: TData[] };

@@ -1,7 +1,7 @@
 <template>
   <div class="month">
     <MonthHeader></MonthHeader>
-    <MonthBody class="flex-1" :data="completeData"></MonthBody>
+    <MonthBody class="flex-1"></MonthBody>
   </div>
 </template>
 <script setup lang="ts">

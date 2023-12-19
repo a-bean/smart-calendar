@@ -1,6 +1,6 @@
 <template>
   <div class="month-body">
-    <div v-for="(row, index) of formatData" :key="index" class="month-body-box">
+    <div v-for="(row, rowIndex) of formatData" :key="rowIndex" class="month-body-box">
       <div
         v-for="(item, i) of row"
         :key="i"
@@ -16,38 +16,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
 import { TData, TDate } from '@/types';
-import { convertTo2DArray } from '@/utils';
 import MonthBodyItem from './month-body-item.vue';
-import { getTimeInterval, getDate } from '@/date';
+import { useMonth } from '@/hooks/useMonth';
 
-const props = defineProps<{
-  data: (TDate & { dataList: TData[] })[];
-}>();
-
-const formatData = computed(() => {
-  const list = convertTo2DArray<TDate & { dataList: TData[] }>(props.data, 7);
-  for (let i = 0; i < list.length; i++) {
-    for (let j = 0; j < list[i].length; j++) {
-      const { dataList } = list[i][j];
-      if (!dataList) continue;
-      for (let k = 0; k < dataList.length; k++) {
-        const { start, end } = dataList[k];
-        const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' });
-        const offset = 7 - j;
-        if (interval > offset && i < 5) {
-          list[i + 1][0].dataList.push({
-            ...dataList[k],
-            start: getDate({ date: start, add: offset }),
-          });
-        }
-      }
-    }
-  }
-  console.log('list11', list);
-  return list;
-});
+const { formatData } = useMonth();
 </script>
 
 <style>
