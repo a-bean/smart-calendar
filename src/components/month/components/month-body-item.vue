@@ -46,7 +46,7 @@ import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import { TData, TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
-import { getDate, getTimeInterval, getWeekIndex } from '@/date';
+import { getDate, getTimeInterval, getWeekIndex, isBefore } from '@/date';
 import { countItemsWithId } from '@/utils';
 
 const { onDrop, onDragover, taskBoxWidth, formatData } = useMonth();
@@ -56,16 +56,12 @@ const props = defineProps<{
 }>();
 
 const getMonthTaskWidth = (data: TData) => {
-  const currentFragmentStart =
-    getTimeInterval({ bigDate: data.start, smallDate: props.data.date, unit: 'day' }) < 0 ? props.data.date : data.start;
-
+  const currentFragmentStart = isBefore(data.start, props.data.date) ? props.data.date : data.start;
   const interval = Math.min(
-    getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }),
+    getTimeInterval({ bigDate: data.end, smallDate: currentFragmentStart, unit: 'day' }),
     6 - getWeekIndex(currentFragmentStart)
   );
 
-  console.log(getTimeInterval({ bigDate: data.end, smallDate: data.start, unit: 'day' }));
-  console.log(6 - getWeekIndex(data.start));
   return `calc(${interval + 1}00% + ${interval}px)`;
 };
 
@@ -102,7 +98,7 @@ let timer: NodeJS.Timeout;
 watch(
   () => props.data.dataList,
   () => {
-    console.log('监测taskList变化');
+    // console.log('监测taskList变化');
     timer = setTimeout(() => {
       onTaskBoxResize();
     });

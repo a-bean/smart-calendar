@@ -195,6 +195,16 @@ export const getYearDates = (offset = 0): TYearDate[][] => {
 
     yearDates.push(monthDates);
   }
-  console.log(yearDates);
   return yearDates;
+};
+
+/**
+ * @function isBefore
+ * @description: 比较两个日期的大小
+ * @param {ConfigType} beforeDate
+ * @param {ConfigType} afterDate
+ * @returns {boolean}
+ */
+export const isBefore = (beforeDate: ConfigType, afterDate: ConfigType): boolean => {
+  return dayjs(beforeDate).isBefore(afterDate);
 };

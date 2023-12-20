@@ -1,6 +1,6 @@
 import { computed, reactive, ref } from 'vue';
 import { cloneDeep } from 'lodash';
-import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth, getTimeInterval } from '@/date';
+import { weeks, getWeekIndex, getDate, getLunarDay, getLunarMonth, getTimeInterval, isBefore } from '@/date';
 import { convertTo2DArray, findDropTargetDate, findTaskById } from '@/utils';
 import { TData, TDate } from '@/types';
 import { useStore } from '@/hooks/useStore';
@@ -82,34 +82,36 @@ export const useMonth = () => {
       };
     });
   });
+
   /** 对completeData的数据进行跨日期处理 */
   const formatData = computed(() => {
     const list = convertTo2DArray<TDate & { dataList: TData[] }>(completeData.value, 7);
-    // for (let i = 0; i < list.length; i++) {
-    //   for (let j = 0; j < list[i].length; j++) {
-    //     const { dataList } = list[i][j];
-    //     if (!dataList) continue;
-    //     for (let k = 0; k < dataList.length; k++) {
-    //       const { start, end } = dataList[k];
-    //       const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
-    //       const offset = 7 - j;
-    //       if (interval > offset && i < 5) {
-    //         list[i + 1][0].dataList.push({
-    //           ...dataList[k],
-    //           start: getDate({ date: start, add: offset }),
-    //         });
-    //       }
-    //     }
-    //   }
-    // }
-    console.log('lll', list);
+    for (let i = 0; i < list.length; i++) {
+      for (let j = 0; j < list[i].length; j++) {
+        const { dataList } = list[i][j];
+        if (!dataList) continue;
+        for (let k = 0; k < dataList.length; k++) {
+          const { end } = dataList[k];
+          const start = isBefore(dataList[k].start, list[0][0].date) ? list[0][0].date : dataList[k].start;
+          const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
+          const offset = 7 - j;
+          if (interval > offset && i < 5) {
+            list[i + 1][0].dataList.push({
+              ...dataList[k],
+              start: getDate({ date: start, add: offset }),
+            });
+          }
+        }
+      }
+    }
+    // console.log('list=>', list);
     return list;
   });
 
   const onDragStart = (e: DragEvent, data?: TData) => {
     if (!taskBoxWidth.value || !data) return;
 
-    dragData.targetFragmentStart = data.start;
+    dragData.targetFragmentStart = isBefore(completeData.value[0].date, data.start) ? data.start : completeData.value[0].date;
     dragData.targetEnd = data.end;
     dragData.targetId = data.id as number;
     dragData.offset = Math.floor(e.offsetX / taskBoxWidth.value);
@@ -122,7 +124,7 @@ export const useMonth = () => {
 
   const onDrop = (e: DragEvent) => {
     dragData.targetDate = findDropTargetDate(e.target as HTMLElement);
-    console.log(dragData);
+    // console.log(dragData);
     if (!dragData.targetDate) return;
 
     // 去掉原来的数据
@@ -142,19 +144,22 @@ export const useMonth = () => {
     /** 鼠标点击的位置离这条task的start的偏移天数 */
     const clickOffset = interval + dragData.offset;
     // 添加新的数据
-    const key = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
-    const taskOffset = getTimeInterval({ bigDate: key, smallDate: dragData.targetTask!.start, unit: 'day' });
+    const newTaskStart = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
+    const key = isBefore(newTaskStart, completeData.value[0].date) ? completeData.value[0].date : newTaskStart;
+    const taskOffset = getTimeInterval({ bigDate: newTaskStart, smallDate: dragData.targetTask!.start, unit: 'day' });
+    console.log(taskOffset, 'ta');
     if (!store.value.data[key]) {
       store.value.data[key] = [];
     }
 
-    const newItem = {
+    const newTask = {
       id: dragData.targetId,
       name: dragData.targetTask!.name,
-      start: key,
+      start: newTaskStart,
       end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }),
     };
-    store.value.data[key].push(newItem);
+    console.log('newTask', newTask, 'key', key);
+    store.value.data[key].push(newTask);
   };
 
   const selectedTask = (id: number) => {
