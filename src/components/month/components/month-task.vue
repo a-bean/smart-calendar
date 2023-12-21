@@ -3,6 +3,7 @@
     class="month-task"
     :class="{ 'bg-blue color-white': props.data?.id === selectedTaskId }"
     draggable="true"
+    :data-id="props.data?.id"
     @click="selectedTask(props.data!.id as number)"
     @dragstart="(e) => onDragStart(e, props.data)"
   >

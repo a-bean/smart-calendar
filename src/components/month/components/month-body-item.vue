@@ -81,7 +81,7 @@ const surplusTaskCount = computed(() => {
 });
 
 const onTaskBoxResize = () => {
-  taskBoxWidth.value = boxRef.value?.clientWidth; // 记录月视图每个日期的宽度
+  taskBoxWidth.value = boxRef.value!.clientWidth; // 记录月视图每个日期的宽度
 
   const boxHeight = boxRef.value?.clientHeight;
   const titleHeight = titleRef.value?.clientHeight;

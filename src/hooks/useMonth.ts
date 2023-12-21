@@ -85,7 +85,7 @@ export const useMonth = () => {
 
   /** 对completeData的数据进行跨日期处理 */
   const formatData = computed(() => {
-    const list = convertTo2DArray<TDate & { dataList: TData[] }>(completeData.value, 7);
+    const list = cloneDeep(convertTo2DArray<TDate & { dataList: TData[] }>(completeData.value, 7));
     for (let i = 0; i < list.length; i++) {
       for (let j = 0; j < list[i].length; j++) {
         const { dataList } = list[i][j];
@@ -104,7 +104,6 @@ export const useMonth = () => {
         }
       }
     }
-    // console.log('list=>', list);
     return list;
   });
 
@@ -124,15 +123,16 @@ export const useMonth = () => {
 
   const onDrop = (e: DragEvent) => {
     dragData.targetDate = findDropTargetDate(e.target as HTMLElement);
-    // console.log(dragData);
-    if (!dragData.targetDate) return;
 
-    // 去掉原来的数据
-    for (const key in store.value.data) {
-      if (store.value.data[key] && store.value.data[key].some((item) => item.id === dragData.targetId)) {
-        store.value.data[key] = store.value.data[key].filter((item) => item.id !== dragData.targetId);
-      }
+    const dataId = (e.target as HTMLElement).getAttribute('data-id');
+    // 如果dataId有值，说明是task拖拽到另外一个task上了，这时候他会取另外
+    // 一个task的头部所在的box的日期作为targetDate，所以得加一个偏移量。
+    if (dataId) {
+      const offset = Math.floor(e.offsetX / taskBoxWidth.value!);
+      dragData.targetDate = getDate({ date: dragData.targetDate, add: offset });
     }
+
+    if (!dragData.targetDate) return;
 
     /** 当前task片段的start与task的start的偏移天数 */
     const interval = getTimeInterval({
@@ -140,26 +140,31 @@ export const useMonth = () => {
       smallDate: getDate({ date: dragData.targetTask!.start, format: 'YYYY-MM-DD' }),
       unit: 'day',
     });
-
     /** 鼠标点击的位置离这条task的start的偏移天数 */
     const clickOffset = interval + dragData.offset;
-    // 添加新的数据
     const newTaskStart = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
-    const key = isBefore(newTaskStart, completeData.value[0].date) ? completeData.value[0].date : newTaskStart;
     const taskOffset = getTimeInterval({ bigDate: newTaskStart, smallDate: dragData.targetTask!.start, unit: 'day' });
-    console.log(taskOffset, 'ta');
-    if (!store.value.data[key]) {
-      store.value.data[key] = [];
+    if (taskOffset === 0) return;
+
+    // remove old data
+    for (const oldKey in store.value.data) {
+      if (store.value.data[oldKey] && store.value.data[oldKey].some((item) => item.id === dragData.targetId)) {
+        store.value.data[oldKey] = store.value.data[oldKey].filter((item) => item.id !== dragData.targetId);
+      }
     }
 
+    // add new data
+    const newKey = isBefore(newTaskStart, completeData.value[0].date) ? completeData.value[0].date : newTaskStart;
+    if (!store.value.data[newKey]) {
+      store.value.data[newKey] = [];
+    }
     const newTask = {
       id: dragData.targetId,
       name: dragData.targetTask!.name,
       start: newTaskStart,
       end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }),
     };
-    console.log('newTask', newTask, 'key', key);
-    store.value.data[key].push(newTask);
+    store.value.data[newKey].push(newTask);
   };
 
   const selectedTask = (id: number) => {
