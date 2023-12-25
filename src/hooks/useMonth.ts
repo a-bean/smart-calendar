@@ -97,9 +97,8 @@ export const useMonth = () => {
           const offset = 7 - j;
 
           // 在当前行补充数据（占位，用id为string，后续显示隐藏掉），如果当前行不够，就补充下一行
-          console.log(interval, 'interval', offset);
-          for (let l = 1; l < offset && interval; l++) {
-            // list[i][l + j].dataList.splice(k, 0, { id: '-1', name: '占位', start: '', end: '' });
+          for (let l = 1; l < offset && interval > 1; l++) {
+            list[i][l + j].dataList.splice(k, 0, { id: '-1', name: '占位', start: '', end: '' });
           }
 
           // 补充下一行的数据
@@ -114,7 +113,6 @@ export const useMonth = () => {
     }
     return list;
   });
-
   const onDragStart = (e: DragEvent, data?: TData) => {
     if (!taskBoxWidth.value || !data) return;
 

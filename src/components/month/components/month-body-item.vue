@@ -81,8 +81,8 @@ const onTaskBoxResize = () => {
   const taskBoxHeight = boxHeight - titleHeight;
   const taskHeight = taskRef.value[0]?.$el.clientHeight;
   if (!taskHeight || !taskBoxHeight || taskBoxHeight < 2 * taskHeight) return;
-
-  showTaskCount.value = Math.floor(taskBoxHeight / taskHeight);
+  // 这边的加1是为了抵消task的margin-bottom的影响，导致还有*项...的显示不完全
+  showTaskCount.value = Math.floor(taskBoxHeight / (taskHeight + 1));
 };
 
 let timer: NodeJS.Timeout;
