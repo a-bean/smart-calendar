@@ -25,7 +25,7 @@ import Year from './components/year/year.vue';
 import { useStore } from './hooks/useStore';
 import { ECalendarType, TData } from './types';
 import { useMonth } from '@/hooks/useMonth';
-import { defineEmits, onUpdated, watch } from 'vue';
+import { onUpdated, watch } from 'vue';
 import { typeOf } from '@/utils';
 
 const { replenishCurrentDays } = useMonth();

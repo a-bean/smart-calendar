@@ -95,8 +95,16 @@ export const useMonth = () => {
           const start = isBefore(dataList[k].start, list[0][0].date) ? list[0][0].date : dataList[k].start;
           const interval = getTimeInterval({ bigDate: end, smallDate: start, unit: 'day' }) + 1;
           const offset = 7 - j;
+
+          // 在当前行补充数据（占位，用id为string，后续显示隐藏掉），如果当前行不够，就补充下一行
+          console.log(interval, 'interval', offset);
+          for (let l = 1; l < offset && interval; l++) {
+            // list[i][l + j].dataList.splice(k, 0, { id: '-1', name: '占位', start: '', end: '' });
+          }
+
+          // 补充下一行的数据
           if (interval > offset && i < 5) {
-            list[i + 1][0].dataList.push({
+            list[i + 1][0].dataList.unshift({
               ...dataList[k],
               start: getDate({ date: start, add: offset }),
             });
@@ -164,7 +172,13 @@ export const useMonth = () => {
       start: newTaskStart,
       end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }),
     };
-    store.value.data[newKey].push(newTask);
+    if (getTimeInterval({ bigDate: newTask.end, smallDate: newTask.start, unit: 'day' }) > 0) {
+      // task跨天就加在前面
+      store.value.data[newKey].unshift(newTask);
+    } else {
+      // task不跨天就加在后面
+      store.value.data[newKey].push(newTask);
+    }
   };
 
   const selectedTask = (id: number) => {

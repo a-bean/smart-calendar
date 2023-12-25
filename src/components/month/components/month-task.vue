@@ -1,7 +1,10 @@
 <template>
   <div
     class="month-task"
-    :class="{ 'bg-blue color-white': props.data?.id === selectedTaskId }"
+    :class="{
+    'bg-blue color-white': props.data?.id === selectedTaskId,
+    'invisible': typeof props.data?.id === 'string',
+    'bg-blue-500 bg-opacity-50':countItemsWithId(props.data?.id as number, formatData) > 1 }"
     draggable="true"
     :data-id="props.data?.id"
     @click="selectedTask(props.data!.id as number)"
@@ -17,8 +20,9 @@
 <script setup lang="ts">
 import { useMonth } from '@/hooks/useMonth';
 import { TData } from '@/types';
+import { countItemsWithId } from '@/utils';
 
-const { onDragStart, selectedTaskId, selectedTask } = useMonth();
+const { onDragStart, selectedTaskId, selectedTask, formatData } = useMonth();
 
 const props = defineProps<{
   data?: TData;
