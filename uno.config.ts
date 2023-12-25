@@ -1,4 +1,3 @@
-// uno.config.ts
 import { defineConfig, presetUno, presetIcons, transformerDirectives } from 'unocss';
 
 export default defineConfig({
