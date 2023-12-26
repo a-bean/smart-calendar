@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { ETaskMoveType } from '@/config';
+import { ETaskMoveType, ONE_HOUR_HEIGHT } from '@/config';
 import { getTimeInterval, getDate } from '@/date';
 
 const MIN_HEIGHT = 15;
@@ -37,14 +37,12 @@ export const useDay = () => {
   };
 
   const mousemove = (e: MouseEvent) => {
-    console.log('mousemove');
     if (!isDragging) return;
     const target = mockData.value.find((item) => item.id === targetId)!;
-
-    const everyPxOfMinute = (taskBodyHeight.value * 0.08) / 60;
+    const everyPxOfMinute = 60 / (taskBodyHeight.value * (ONE_HOUR_HEIGHT / 100));
     const incrementalTime = everyPxOfMinute * (e.clientY - initialY);
-    const timesDiff = getTimeInterval({ bigDate: target.endTime, smallDate: target.startTime, unit: 'minute' });
 
+    const timesDiff = getTimeInterval({ bigDate: target.endTime, smallDate: target.startTime, unit: 'minute' });
     if (timesDiff <= MIN_HEIGHT && e.clientY > initialY && moveType === ETaskMoveType.MOVE_TOP) return;
     if (timesDiff <= MIN_HEIGHT && e.clientY < initialY && moveType === ETaskMoveType.MOVE_BOTTOM) return;
 
@@ -65,7 +63,6 @@ export const useDay = () => {
         format: 'YYYY-MM-DD HH:mm:ss',
       });
     }
-
     initialY = e.clientY;
   };
 
@@ -81,7 +78,6 @@ export const useDay = () => {
     isDragging = true;
     initialY = e.clientY;
 
-    console.log(isDragging);
     changeMoveType(type);
 
     window.addEventListener('mouseup', mouseup);

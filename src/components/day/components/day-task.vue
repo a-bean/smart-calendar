@@ -6,12 +6,12 @@
     @mousedown="(e) => mousedown(e, props.data.id, ETaskMoveType.MOVE_WHOLE)"
   >
     <div
-      class="day-drag-line top-0"
+      class="day-drag-line top--1.5"
       @mousedown.stop="(e) => mousedown(e, props.data.id, ETaskMoveType.MOVE_TOP)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_TOP)"
     ></div>
     <div
-      class="day-drag-line bottom-0"
+      class="day-drag-line bottom--1.5"
       @mousedown.stop="(e) => mousedown(e, props.data.id, ETaskMoveType.MOVE_BOTTOM)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_BOTTOM)"
     ></div>
@@ -66,6 +66,6 @@ const height = computed(() => {
 }
 
 .day-drag-line {
-  @apply h1 w100% position-absolute cursor-row-resize;
+  @apply h3 w100% position-absolute cursor-row-resize;
 }
 </style>
