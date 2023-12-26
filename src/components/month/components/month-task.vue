@@ -31,7 +31,7 @@ const props = defineProps<{
 
 <style>
 .month-task {
-  @apply h4 font-size-2.8 border-rd pl-2 pr-2 mb0.5px flex flex-items-center justify-between box-border relative z1;
+  @apply h4 font-size-2.8 border-rd pl-2 pr-2 flex flex-items-center justify-between box-border relative z1;
 }
 .month-task-point {
   @apply h1.4 w1.4 b-rd-50% mr1 bg-blue;

@@ -20,12 +20,14 @@
         v-for="item of props.data.dataList?.slice(0, 1)"
         ref="taskRef"
         :key="item.id"
+        class="mb1px"
         :data="item"
         :style="{ width: getMonthTaskWidth(item) }"
       />
       <MonthTask
         v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)"
         :key="item.id"
+        class="mb1px"
         :data="item"
         :style="{ width: getMonthTaskWidth(item) }"
       />

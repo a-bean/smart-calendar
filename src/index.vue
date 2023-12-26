@@ -7,10 +7,10 @@
       </Radio>
     </RadioGroup>
     <SwitchButton /> -->
-    <MonthCalendar />
-    <!-- <DayCalendar />
-    <WeekCalendar />
-    <Year /> -->
+    <!--    <MonthCalendar />-->
+    <DayCalendar />
+    <!--    <WeekCalendar />-->
+    <!--    <Year /> &ndash;&gt;-->
   </div>
 </template>
 <script setup lang="ts">
