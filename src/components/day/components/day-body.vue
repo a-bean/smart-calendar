@@ -11,15 +11,10 @@ import TimeDivider from '@/components/time-divider/time-divider.vue';
 import CurrentTimeline from '@/components/current-timeline/current-timeline.vue';
 import DayTask from './day-task.vue';
 import { useDay } from '@/hooks/useDay';
+import { TData } from '@/types';
 
 const props = defineProps<{
-  data: {
-    id: number;
-    title: string;
-    startTime: string;
-    endTime: string;
-    color: string;
-  }[];
+  data: TData[];
 }>();
 
 const { taskBodyHeight } = useDay();

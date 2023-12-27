@@ -1,24 +1,24 @@
 import { ref } from 'vue';
 import { ETaskMoveType, ONE_HOUR_HEIGHT } from '@/config';
 import { getTimeInterval, getDate } from '@/date';
+import { TData } from '@/types';
 
 const MIN_HEIGHT = 15;
+const BEST_TIME_SCALE = 15;
 const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
-const mockData = ref([
+const mockData = ref<TData[]>([
   {
     id: 2,
-    title: '新建日程',
-    startTime: '2021-08-01 12:12',
-    endTime: '2021-08-01 14:12',
-    color: 'red',
+    name: '新建日程',
+    start: '2021-08-01 12:12',
+    end: '2021-08-01 14:12',
   },
   {
     id: 3,
-    title: '新建日程',
-    startTime: '2021-08-01 04:12',
-    endTime: '2021-08-01 08:12',
-    color: 'green',
+    name: '新建日程',
+    start: '2021-08-01 04:12',
+    end: '2021-08-01 08:12',
   },
 ]);
 
@@ -42,32 +42,40 @@ export const useDay = () => {
     const everyPxOfMinute = 60 / (taskBodyHeight.value * (ONE_HOUR_HEIGHT / 100));
     const incrementalTime = everyPxOfMinute * (e.clientY - initialY);
 
-    const timesDiff = getTimeInterval({ bigDate: target.endTime, smallDate: target.startTime, unit: 'minute' });
+    const timesDiff = getTimeInterval({ bigDate: target.end, smallDate: target.start, unit: 'minute' });
     if (timesDiff <= MIN_HEIGHT && e.clientY > initialY && moveType === ETaskMoveType.MOVE_TOP) return;
     if (timesDiff <= MIN_HEIGHT && e.clientY < initialY && moveType === ETaskMoveType.MOVE_BOTTOM) return;
 
+    const adjustTime = (prop: 'start' | 'end') => {
+      target[prop] = getDate({ date: target[prop], add: incrementalTime, type: 'minute', format: 'YYYY-MM-DD HH:mm:ss' });
+    };
     if (moveType === ETaskMoveType.MOVE_TOP || moveType === ETaskMoveType.MOVE_WHOLE) {
-      target.startTime = getDate({
-        date: target.startTime,
-        add: incrementalTime,
-        type: 'minute',
-        format: 'YYYY-MM-DD HH:mm:ss',
-      });
+      adjustTime('start');
+    }
+    if (moveType === ETaskMoveType.MOVE_BOTTOM || moveType === ETaskMoveType.MOVE_WHOLE) {
+      adjustTime('end');
     }
 
-    if (moveType === ETaskMoveType.MOVE_BOTTOM || moveType === ETaskMoveType.MOVE_WHOLE) {
-      target.endTime = getDate({
-        date: target.endTime,
-        add: incrementalTime,
-        type: 'minute',
-        format: 'YYYY-MM-DD HH:mm:ss',
-      });
-    }
     initialY = e.clientY;
   };
 
   const mouseup = () => {
     isDragging = false;
+
+    // 滑动后调整开始或者结束时间，将时间的 分钟 总是调整为15的的倍数
+    const target = mockData.value.find((item) => item.id === targetId)!;
+    const startRemainder = Number(getDate({ date: target.start, format: 'mm' })) % BEST_TIME_SCALE;
+    const endRemainder = Number(getDate({ date: target.end, format: 'mm' })) % BEST_TIME_SCALE;
+    const adjustTime = (remainder: number, prop: 'start' | 'end') => {
+      const adjustValue = remainder < Math.round(BEST_TIME_SCALE / 2) ? -remainder : BEST_TIME_SCALE - remainder;
+      target[prop] = getDate({ date: target[prop], add: adjustValue, type: 'minute', format: 'YYYY-MM-DD HH:mm:ss' });
+    };
+    if (moveType === ETaskMoveType.MOVE_TOP || moveType === ETaskMoveType.MOVE_WHOLE) {
+      adjustTime(startRemainder, 'start');
+    }
+    if (moveType === ETaskMoveType.MOVE_BOTTOM || moveType === ETaskMoveType.MOVE_WHOLE) {
+      adjustTime(endRemainder, 'end');
+    }
 
     window.removeEventListener('mouseup', mouseup);
     window.removeEventListener('mousemove', mousemove);
