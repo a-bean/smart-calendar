@@ -5,11 +5,13 @@
     @click="selectedTask(props.data.id as number)"
     @mousedown="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_WHOLE)"
   >
+    <!--上拖拉的线-->
     <div
       class="day-drag-line top--1.5"
       @mousedown.stop="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_TOP)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_TOP)"
     ></div>
+    <!--下拖拉的线-->
     <div
       class="day-drag-line bottom--1.5"
       @mousedown.stop="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_BOTTOM)"

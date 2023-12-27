@@ -2,7 +2,9 @@
   <div ref="bodyRef" class="flex-1 position-relative">
     <TimeDivider />
     <CurrentTimeline class="w100% position-absolute" />
-    <DayTask v-for="item of props.data" :key="item.id" class="w100%" :data="item" />
+    <template v-for="(item, index) of props.data" :key="item.id">
+      <DayTask :data="item" :class="`w${100 / 2}% left-${index * 50}%`" />
+    </template>
   </div>
 </template>
 <script setup lang="ts">
