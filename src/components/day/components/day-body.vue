@@ -2,8 +2,10 @@
   <div ref="bodyRef" class="flex-1 position-relative">
     <TimeDivider />
     <CurrentTimeline class="w100% position-absolute" />
-    <template v-for="(item, index) of props.data" :key="item.id">
-      <DayTask :data="item" :class="`w${100 / 2}% left-${index * 50}%`" />
+    <template v-for="(items, index) of props.data" :key="index">
+      <template v-for="(item, i) of items" :key="item.id">
+        <DayTask :data="item" :style="{ width: `${100 / items.length}%`, left: `${i * (100 / items.length)}%` }" />
+      </template>
     </template>
   </div>
 </template>
@@ -16,7 +18,7 @@ import { useDay } from '@/hooks/useDay';
 import { TData } from '@/types';
 
 const props = defineProps<{
-  data: TData[];
+  data: TData[][];
 }>();
 
 const { taskBodyHeight } = useDay();
