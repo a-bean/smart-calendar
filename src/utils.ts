@@ -85,3 +85,31 @@ export const countItemsWithId = (idToCount: number, data: (TDate & { dataList: T
   });
   return count;
 };
+
+const doSchedulesOverlap = (schedule1: TData, schedule2: TData) => {
+  const start1 = new Date(schedule1.start).getTime();
+  const end1 = new Date(schedule1.end).getTime();
+  const start2 = new Date(schedule2.start).getTime();
+  const end2 = new Date(schedule2.end).getTime();
+  return start1 < end2 && end1 > start2;
+};
+
+export const groupSchedulesByOverlap = (schedules: TData[]) => {
+  const result: TData[][] = [];
+
+  for (let i = 0; i < schedules.length; i++) {
+    const resultIds = result.flat().map((item) => item.id);
+    if (resultIds.includes(schedules[i].id)) {
+      continue;
+    }
+    const arr: TData[] = [schedules[i]];
+    for (let j = i + 1; j < schedules.length; j++) {
+      const overlappingSchedule = doSchedulesOverlap(schedules[i], schedules[j]);
+      if (!resultIds.includes(schedules[j].id) && overlappingSchedule) {
+        arr.push(schedules[j]);
+      }
+    }
+    result.push(arr);
+  }
+  return result;
+};

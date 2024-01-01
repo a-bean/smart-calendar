@@ -1,7 +1,8 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { ETaskMoveType, ONE_HOUR_HEIGHT } from '@/config';
 import { getTimeInterval, getDate } from '@/date';
 import { TData } from '@/types';
+import { groupSchedulesByOverlap } from '@/utils';
 
 const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
@@ -14,36 +15,36 @@ const mockData = ref<TData[]>([
     start: '2021-08-01 2:00',
     end: '2021-08-01 4:00',
   },
-  {
-    id: 3,
-    name: '新建日程',
-    start: '2021-08-01 3:00',
-    end: '2021-08-01 5:00',
-  },
-  {
-    id: 8,
-    name: '新建日程',
-    start: '2021-08-01 3:30',
-    end: '2021-08-01 5:00',
-  },
-  {
-    id: 4,
-    name: '新建日程',
-    start: '2021-08-01 5:00',
-    end: '2021-08-01 6:00',
-  },
-  {
-    id: 5,
-    name: '新建日程',
-    start: '2021-08-01 5:00',
-    end: '2021-08-01 7:00',
-  },
-  {
-    id: 6,
-    name: '新建日程',
-    start: '2021-08-01 10:00',
-    end: '2021-08-01 11:00',
-  },
+  // {
+  //   id: 3,
+  //   name: '新建日程',
+  //   start: '2021-08-01 3:00',
+  //   end: '2021-08-01 5:00',
+  // },
+  // {
+  //   id: 8,
+  //   name: '新建日程',
+  //   start: '2021-08-01 3:30',
+  //   end: '2021-08-01 5:00',
+  // },
+  // {
+  //   id: 4,
+  //   name: '新建日程',
+  //   start: '2021-08-01 5:00',
+  //   end: '2021-08-01 6:00',
+  // },
+  // {
+  //   id: 5,
+  //   name: '新建日程',
+  //   start: '2021-08-01 5:00',
+  //   end: '2021-08-01 7:00',
+  // },
+  // {
+  //   id: 6,
+  //   name: '新建日程',
+  //   start: '2021-08-01 10:00',
+  //   end: '2021-08-01 11:00',
+  // },
   {
     id: 7,
     name: '新建日程',
@@ -56,6 +57,11 @@ export const useDay = () => {
   const selectedTask = (id: number) => {
     selectedTaskId.value = id;
   };
+
+  const formatData = computed(() => {
+    console.log(groupSchedulesByOverlap(mockData.value));
+    return groupSchedulesByOverlap(mockData.value);
+  });
 
   let isDragging = false;
   let initialY: number;
@@ -77,7 +83,7 @@ export const useDay = () => {
     if (timesDiff <= MIN_HEIGHT && e.clientY < initialY && moveType === ETaskMoveType.MOVE_BOTTOM) return;
 
     const adjustTime = (prop: 'start' | 'end') => {
-      target[prop] = getDate({ date: target[prop], add: incrementalTime, type: 'minute', format: 'YYYY-MM-DD HH:mm:ss' });
+      target[prop] = getDate({ date: target[prop], add: incrementalTime, type: 'minute', format: 'YYYY-MM-DD HH:mm' });
     };
     if (moveType === ETaskMoveType.MOVE_TOP || moveType === ETaskMoveType.MOVE_WHOLE) {
       adjustTime('start');
@@ -98,7 +104,7 @@ export const useDay = () => {
     const endRemainder = Number(getDate({ date: target.end, format: 'mm' })) % BEST_TIME_SCALE;
     const adjustTime = (remainder: number, prop: 'start' | 'end') => {
       const adjustValue = remainder < Math.round(BEST_TIME_SCALE / 2) ? -remainder : BEST_TIME_SCALE - remainder;
-      target[prop] = getDate({ date: target[prop], add: adjustValue, type: 'minute', format: 'YYYY-MM-DD HH:mm:ss' });
+      target[prop] = getDate({ date: target[prop], add: adjustValue, type: 'minute', format: 'YYYY-MM-DD HH:mm' });
     };
     if (moveType === ETaskMoveType.MOVE_TOP || moveType === ETaskMoveType.MOVE_WHOLE) {
       adjustTime(startRemainder, 'start');
@@ -130,6 +136,7 @@ export const useDay = () => {
   return {
     taskBodyHeight,
     mockData,
+    formatData,
     selectedTask,
     selectedTaskId,
     mousedown,
