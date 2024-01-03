@@ -111,6 +111,7 @@ export const useMonth = () => {
         }
       }
     }
+    console.log('list', list);
     return list;
   });
   const onDragStart = (e: DragEvent, data?: TData) => {
@@ -146,9 +147,20 @@ export const useMonth = () => {
       smallDate: getDate({ date: dragData.targetTask!.start, format: 'YYYY-MM-DD' }),
       unit: 'day',
     });
+    console.log('interval', interval);
     /** 鼠标点击的位置离这条task的start的偏移天数 */
     const clickOffset = interval + dragData.offset;
-    const newTaskStart = getDate({ date: dragData.targetDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD' });
+
+    // 目标日期拼接上原来task的时分
+    const newTaskStartDate = `${getDate({
+      date: dragData.targetDate,
+      format: 'YYYY-MM-DD',
+    })} ${getDate({
+      date: dragData.targetTask?.start,
+      format: 'HH:mm',
+    })}`;
+
+    const newTaskStart = getDate({ date: newTaskStartDate, add: -clickOffset, type: 'day', format: 'YYYY-MM-DD HH:mm' });
     const taskOffset = getTimeInterval({ bigDate: newTaskStart, smallDate: dragData.targetTask!.start, unit: 'day' });
     if (taskOffset === 0) return;
 
@@ -160,7 +172,10 @@ export const useMonth = () => {
     }
 
     // add new data
-    const newKey = isBefore(newTaskStart, completeData.value[0].date) ? completeData.value[0].date : newTaskStart;
+    const newKey = isBefore(newTaskStart, completeData.value[0].date)
+      ? completeData.value[0].date
+      : getDate({ date: newTaskStart, format: 'YYYY-MM-DD' });
+
     if (!store.value.data[newKey]) {
       store.value.data[newKey] = [];
     }
@@ -168,7 +183,7 @@ export const useMonth = () => {
       id: dragData.targetId,
       name: dragData.targetTask!.name,
       start: newTaskStart,
-      end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD' }),
+      end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD HH:mm' }),
     };
     if (getTimeInterval({ bigDate: newTask.end, smallDate: newTask.start, unit: 'day' }) > 0) {
       // task跨天就加在前面

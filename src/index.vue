@@ -7,8 +7,8 @@
       </Radio>
     </RadioGroup>
     <SwitchButton /> -->
-    <!--    <MonthCalendar />-->
-    <DayCalendar />
+    <MonthCalendar />
+    <!--    <DayCalendar />-->
     <!--    <WeekCalendar />-->
     <!--    <Year /> &ndash;&gt;-->
   </div>

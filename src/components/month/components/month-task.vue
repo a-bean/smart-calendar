@@ -2,9 +2,10 @@
   <div
     class="month-task"
     :class="{
-    'bg-blue color-white': props.data?.id === selectedTaskId,
-    'invisible': typeof props.data?.id === 'string',
-    'bg-blue-500 bg-opacity-50':countItemsWithId(props.data?.id as number, formatData) > 1 }"
+      'bg-blue color-white': props.data?.id === selectedTaskId,
+      invisible: typeof props.data?.id === 'string',
+      'bg-blue-500 bg-opacity-50': getTimeInterval({ bigDate: props.data?.end, smallDate: props.data?.start, unit: 'day' }) > 1,
+    }"
     draggable="true"
     :data-id="props.data?.id"
     @click="selectedTask(props.data!.id as number)"
@@ -12,7 +13,7 @@
   >
     <div class="flex flex-items-center">
       <div class="month-task-point" :class="{ ' bg-white': props.data?.id === selectedTaskId }"></div>
-      {{ props.data?.name }}
+      {{ props.data?.name }} {{ getTimeInterval({ bigDate: props.data?.end, smallDate: props.data?.end, unit: 'day' }) }}
     </div>
     <div>{{ props.data?.id }}</div>
   </div>
@@ -20,9 +21,9 @@
 <script setup lang="ts">
 import { useMonth } from '@/hooks/useMonth';
 import { TData } from '@/types';
-import { countItemsWithId } from '@/utils';
+import { getTimeInterval } from '@/date';
 
-const { onDragStart, selectedTaskId, selectedTask, formatData } = useMonth();
+const { onDragStart, selectedTaskId, selectedTask } = useMonth();
 
 const props = defineProps<{
   data?: TData;
