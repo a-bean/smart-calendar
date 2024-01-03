@@ -8,7 +8,7 @@ type TStore = {
 };
 
 const store = ref<TStore>({
-  calendarVisible: ECalendarType.MONTH,
+  calendarVisible: ECalendarType.DAY,
   data: {},
   currentDays: [],
 });

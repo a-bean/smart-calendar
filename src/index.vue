@@ -7,8 +7,8 @@
       </Radio>
     </RadioGroup>
     <SwitchButton /> -->
-    <MonthCalendar />
-    <!--    <DayCalendar />-->
+    <!--    <MonthCalendar />-->
+    <DayCalendar />
     <!--    <WeekCalendar />-->
     <!--    <Year /> &ndash;&gt;-->
   </div>
@@ -40,6 +40,7 @@ const typeMap = {
 };
 
 const props = defineProps<{ data: { [key: string]: TData[] } }>();
+
 onUpdated(() => {
   getData(props.data);
 });
@@ -52,9 +53,15 @@ const emitter = defineEmits<{
 watch(
   () => store.value.currentDays,
   () => {
+    console.log('store.value.currentDays', store.value.currentDays);
     if (store.value.calendarVisible === ECalendarType.MONTH) {
+      console.log(1);
       emitter('getDateScope', [replenishCurrentDays.value[0].date, replenishCurrentDays.value[replenishCurrentDays.value.length - 1].date]);
+    } else if (store.value.calendarVisible === ECalendarType.DAY) {
+      emitter('getDateScope', [store.value.currentDays[0].date, store.value.currentDays[0].date]);
+      console.log(2);
     } else {
+      console.log(3);
       emitter('getDateScope', [store.value.currentDays[0].date, store.value.currentDays[store.value.currentDays.length - 1].date]);
     }
   }

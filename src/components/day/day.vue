@@ -18,8 +18,17 @@
 import { useDay } from '@/hooks/useDay';
 import TimeScale from '@/components/time-scale/time-scale.vue';
 import dayBody from './components/day-body.vue';
+import { onMounted } from 'vue';
+import { getDaysScope } from '@/date';
+import { useStore } from '@/hooks/useStore';
+
+const { store } = useStore();
 
 const { formatData } = useDay();
+
+onMounted(() => {
+  store.value.currentDays = getDaysScope({ type: 'day' });
+});
 </script>
 
 <style>
