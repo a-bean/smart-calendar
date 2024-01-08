@@ -1,35 +1,40 @@
 <template>
   <div class="h80% w80%">
-    <!-- <HeaderTitle date="2023年2月3日" />
-    <RadioGroup v-model:model-value="store.calendarVisible">
-      <Radio v-for="(value, key) of typeMap" :key="key" :value="key">
-        {{ value }}
-      </Radio>
-    </RadioGroup>
-    <SwitchButton /> -->
-    <!--    <MonthCalendar />-->
-    <DayCalendar />
+    <div class="flex flex-items-center justify-between">
+      <HeaderTitle date="2023年2月3日" />
+      <RadioGroup v-model:model-value="store.calendarVisible">
+        <Radio v-for="(value, key) of typeMap" :key="key" :value="key">
+          {{ value }}
+        </Radio>
+      </RadioGroup>
+      <SwitchButton />
+    </div>
+    <MonthCalendar />
+    <!--    <DayCalendar />-->
     <!--    <WeekCalendar />-->
-    <!--    <Year /> &ndash;&gt;-->
+    <!--    <Year />-->
   </div>
 </template>
 <script setup lang="ts">
+import { onUpdated, watch } from 'vue';
+// 组件
 import MonthCalendar from './components/month/month.vue';
 import DayCalendar from './components/day/day.vue';
 import WeekCalendar from './components/week/week.vue';
+import Year from './components/year/year.vue';
 import RadioGroup from './components/radio/radio-group.vue';
 import Radio from './components/radio/radio-item.vue';
 import SwitchButton from './components/switch-button/switch-button.vue';
 import HeaderTitle from './components/header-title/header-title.vue';
-import Year from './components/year/year.vue';
+
+// hooks, utils
 import { useStore } from './hooks/useStore';
-import { ECalendarType, TData } from './types';
 import { useMonth } from '@/hooks/useMonth';
-import { onUpdated, watch } from 'vue';
-import { typeOf } from '@/utils';
+
+// types
+import { ECalendarType, TData } from './types';
 
 const { replenishCurrentDays } = useMonth();
-
 const { store, getData } = useStore();
 
 const typeMap = {
@@ -51,18 +56,18 @@ const emitter = defineEmits<{
 }>();
 
 watch(
-  () => store.value.currentDays,
+  () => store.value.currentDate,
   () => {
-    console.log('store.value.currentDays', store.value.currentDays);
+    console.log('store.value.currentDays', store.value.currentDate);
     if (store.value.calendarVisible === ECalendarType.MONTH) {
       console.log(1);
       emitter('getDateScope', [replenishCurrentDays.value[0].date, replenishCurrentDays.value[replenishCurrentDays.value.length - 1].date]);
     } else if (store.value.calendarVisible === ECalendarType.DAY) {
-      emitter('getDateScope', [store.value.currentDays[0].date, store.value.currentDays[0].date]);
+      emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[0].date]);
       console.log(2);
     } else {
       console.log(3);
-      emitter('getDateScope', [store.value.currentDays[0].date, store.value.currentDays[store.value.currentDays.length - 1].date]);
+      emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[store.value.currentDate.length - 1].date]);
     }
   }
 );

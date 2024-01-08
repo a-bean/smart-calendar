@@ -14,7 +14,7 @@ import { useStore } from '@/hooks/useStore';
 const { store } = useStore();
 
 onMounted(() => {
-  store.value.currentDays = getDaysScope({ type: 'month' });
+  store.value.currentDate = getDaysScope({ type: 'month' });
 });
 </script>
 

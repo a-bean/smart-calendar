@@ -1,24 +1,19 @@
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { ECalendarType, TData, TDate } from '@/types';
 
 type TStore = {
   data: { [key: string]: TData[] };
   calendarVisible: ECalendarType;
-  currentDays: TDate[];
+  currentDate: TDate[];
+  title: string;
 };
 
 const store = ref<TStore>({
   calendarVisible: ECalendarType.DAY,
   data: {},
-  currentDays: [],
+  currentDate: [],
+  title: '',
 });
-
-watch(
-  () => store.value.calendarVisible,
-  (val) => {
-    console.log(val, 'val');
-  }
-);
 
 export const useStore = () => {
   /** 设置日历类型 */

@@ -34,8 +34,8 @@ const selectedTaskId = ref(0);
 export const useMonth = () => {
   /** 填满日历 */
   const replenishCurrentDays = computed((): TDate[] => {
-    if (!store.value.currentDays.length) return [];
-    const newDays = cloneDeep(store.value.currentDays);
+    if (!store.value.currentDate.length) return [];
+    const newDays = cloneDeep(store.value.currentDate);
 
     // 补全前面的日期
     while (newDays[0].weekIndex !== 0) {

@@ -27,7 +27,7 @@ const { store } = useStore();
 const { formatData } = useDay();
 
 onMounted(() => {
-  store.value.currentDays = getDaysScope({ type: 'day' });
+  store.value.currentDate = getDaysScope({ type: 'day' });
 });
 </script>
 
