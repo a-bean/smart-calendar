@@ -1,26 +1,24 @@
 <template>
   <div class="switch-container">
-    <div class="switch-btn" @click="emitter(EEvents.prev)">
+    <div class="switch-btn" @click="emitter(EEvents.change, -1)">
       <div class="i-material-symbols:chevron-left"></div>
     </div>
-    <div class="switch-btn switch-btn-today" @click="emitter(EEvents.now)">今天</div>
+    <div class="switch-btn switch-btn-today" @click="emitter(EEvents.recover)">今天</div>
     <div class="switch-btn">
-      <div class="i-material-symbols:chevron-right" @click="emitter(EEvents.next)"></div>
+      <div class="i-material-symbols:chevron-right" @click="emitter(EEvents.change, 1)"></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 enum EEvents {
-  next = 'onNext',
-  prev = 'onPrev',
-  now = 'onNow',
+  change = 'change',
+  recover = 'recover',
 }
 
 const emitter = defineEmits<{
-  (event: EEvents.next): void;
-  (event: EEvents.prev): void;
-  (event: EEvents.now): void;
+  (event: EEvents.change, value: number): void;
+  (event: EEvents.recover): void;
 }>();
 </script>
 

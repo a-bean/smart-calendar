@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { ONE_HOUR_HEIGHT } from '@/config';
 
 const props = defineProps<{

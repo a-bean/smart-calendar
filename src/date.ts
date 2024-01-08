@@ -116,7 +116,7 @@ const formatDays = (days: string[]): TDate[] => {
  * @param {{ type?: 'week' | 'month'; day?: ConfigType; add?: number }} params
  * @return {TDate[]}
  */
-export const getDaysScope = (params: { type?: 'week' | 'month' | 'day'; date?: ConfigType; add?: number } = {}): TDate[] => {
+export const getDaysScope = (params: { type?: ManipulateType; date?: ConfigType; add?: number } = {}): TDate[] => {
   const { type = 'week', date = new Date(), add = 0 } = params;
 
   if (type === 'day') {

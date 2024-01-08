@@ -10,7 +10,6 @@ import { TData } from '@/types';
 
 const data = ref<{ [key: string]: TData[] }>({});
 const getDateScope = (scope: [string, string]) => {
-  console.log('scope', scope);
   // mock data
   data.value = {
     // '2023-12-05': [

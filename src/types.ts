@@ -36,8 +36,8 @@ export type TYearDate = {
 
 /** 1:日 2:周 3:月 4:年 */
 export enum ECalendarType {
-  DAY = 1,
-  WEEK,
-  MONTH,
-  YEAR,
+  DAY = 'day',
+  WEEK = 'week',
+  MONTH = 'month',
+  YEAR = 'year',
 }

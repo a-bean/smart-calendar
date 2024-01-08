@@ -7,11 +7,12 @@
 </template>
 <script setup lang="ts">
 import { ref, provide, watch } from 'vue';
+import { ECalendarType } from '@/types';
 
 const props = defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue']);
 
-const active = ref('');
+const active = ref<ECalendarType>(ECalendarType.DAY);
 provide('switcher', active);
 watch(
   () => props.modelValue,
@@ -24,8 +25,9 @@ watch(
 );
 
 const onClick = (e: Event) => {
+  console.log(111, (e.target as HTMLElement).getAttribute('value'));
   emit('update:modelValue', (e.target as HTMLElement).getAttribute('value'));
-  active.value = (e.target as HTMLElement).getAttribute('value') as string;
+  active.value = (e.target as HTMLElement).getAttribute('value') as ECalendarType;
 };
 </script>
 <style>
