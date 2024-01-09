@@ -52,7 +52,9 @@ watch(
 watch(
   () => store.value.calendarVisible,
   () => {
-    store.value.currentDate = getDaysScope({ type: store.value.calendarVisible });
+    console.log('store.value.calendarVisible', store.value.currentDate);
+    const oldDate = store.value.currentDate?.[0]?.date;
+    store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, date: oldDate });
   },
   {
     immediate: true,

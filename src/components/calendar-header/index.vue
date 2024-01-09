@@ -1,23 +1,29 @@
 <template>
-  <div class="flex flex-items-center justify-between">
-    <HeaderTitle :date="timeTitle" />
-    <RadioGroup v-model:model-value="store.calendarVisible">
-      <Radio v-for="(value, key) of typeMap" :key="key" :value="key"> {{ value }} </Radio>
-    </RadioGroup>
-    <SwitchButton @recover="onRecover" @change="onChange" />
+  <div>
+    <div class="flex flex-items-center justify-center">
+      <RadioGroup v-model:model-value="store.calendarVisible">
+        <Radio v-for="(value, key) of typeMap" :key="key" :value="key"> {{ value }} </Radio>
+      </RadioGroup>
+    </div>
+    <div class="flex flex-items-center justify-between">
+      <HeaderTitle :date="timeTitle" />
+      <SwitchButton @recover="onRecover" @change="onChange" />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue';
+// components
 import HeaderTitle from '@/components/header-title/header-title.vue';
 import RadioGroup from '@/components/radio/radio-group.vue';
 import Radio from '@/components/radio/radio-item.vue';
 import SwitchButton from '@/components/switch-button/switch-button.vue';
-import { ECalendarType } from '@/types';
-import { computed } from 'vue';
-import { getDate, getDaysScope } from '@/date';
+// utils, hooks, types
+import { getDate } from '@/date';
 import { useStore } from '@/hooks/useStore';
+import { ECalendarType } from '@/types';
 
-const { store } = useStore();
+const { store, onRecover, onChange } = useStore();
 
 const typeMap = {
   [ECalendarType.DAY]: '日',
@@ -25,30 +31,17 @@ const typeMap = {
   [ECalendarType.MONTH]: '月',
   [ECalendarType.YEAR]: '年',
 };
+
+const titleMap = {
+  [ECalendarType.DAY]: (date: string) => getDate({ date, format: 'YYYY年MM月DD日' }),
+  [ECalendarType.WEEK]: (date: string) => getDate({ date, format: 'YYYY年MM月' }),
+  [ECalendarType.MONTH]: (date: string) => getDate({ date, format: 'YYYY年MM月' }),
+  [ECalendarType.YEAR]: (date: string) => getDate({ date, format: 'YYYY年' }),
+};
+
 const timeTitle = computed(() => {
   const item = store.value.currentDate[0];
   if (!item?.date) return '';
-  switch (store.value.calendarVisible) {
-    case ECalendarType.DAY:
-      return getDate({ date: item.date, format: 'YYYY年MM月DD日' });
-    case ECalendarType.WEEK:
-      return getDate({ date: item.date, format: 'YYYY年MM月' });
-    case ECalendarType.MONTH:
-      return getDate({ date: item.date, format: 'YYYY年MM月' });
-    default:
-      return getDate({ date: item.date, format: 'YYYY年' });
-  }
+  return titleMap[store.value.calendarVisible](item.date);
 });
-
-let add = 0;
-const onRecover = () => {
-  add = 0;
-  store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, add });
-};
-
-const onChange = (value: number) => {
-  console.log('change', value);
-  add += value;
-  store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, add });
-};
 </script>

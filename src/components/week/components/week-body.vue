@@ -13,7 +13,7 @@ import DayTask from '@/components/day/components/day-task.vue';
 const { mockData } = useDay();
 
 const mouseenter = (e: Event) => {
-  console.log(e);
+  // console.log(e);
 };
 </script>
 <style>

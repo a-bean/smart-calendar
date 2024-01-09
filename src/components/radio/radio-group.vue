@@ -25,7 +25,6 @@ watch(
 );
 
 const onClick = (e: Event) => {
-  console.log(111, (e.target as HTMLElement).getAttribute('value'));
   emit('update:modelValue', (e.target as HTMLElement).getAttribute('value'));
   active.value = (e.target as HTMLElement).getAttribute('value') as ECalendarType;
 };
