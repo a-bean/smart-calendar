@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { ECalendarType, TData, TDate } from '@/types';
 import { getDaysScope } from '@/date';
 
@@ -6,14 +6,17 @@ type TStore = {
   data: { [key: string]: TData[] };
   calendarVisible: ECalendarType;
   currentDate: TDate[];
-  addStep: number;
 };
 
 const store = ref<TStore>({
   calendarVisible: ECalendarType.DAY,
   data: {},
   currentDate: [],
-  addStep: 0,
+});
+
+const firstDay = computed(() => {
+  console.log('firstDay', store.value.currentDate[0]?.date);
+  return store.value.currentDate[0]?.date || new Date();
 });
 
 export const useStore = () => {
@@ -23,7 +26,6 @@ export const useStore = () => {
   };
 
   const onRecover = () => {
-    store.value.addStep = 0;
     store.value.currentDate = getDaysScope({
       type: store.value.calendarVisible,
       date: new Date(),
@@ -38,15 +40,9 @@ export const useStore = () => {
     });
   };
 
-  watch(
-    () => store.value.calendarVisible,
-    () => {
-      store.value.addStep = 0;
-    }
-  );
-
   return {
     store,
+    firstDay,
     getData,
     onRecover,
     onChange,
