@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { ECalendarType, TData, TDate } from '@/types';
 import { getDaysScope } from '@/date';
 
@@ -14,10 +14,7 @@ const store = ref<TStore>({
   currentDate: [],
 });
 
-const firstDay = computed(() => {
-  console.log('firstDay', store.value.currentDate[0]?.date);
-  return store.value.currentDate[0]?.date || new Date();
-});
+const currentDay = ref<string | Date>(new Date());
 
 export const useStore = () => {
   /** 获取网络请求的数据 */
@@ -30,6 +27,7 @@ export const useStore = () => {
       type: store.value.calendarVisible,
       date: new Date(),
     });
+    currentDay.value = store.value.currentDate[0].date;
   };
 
   const onChange = (value: number) => {
@@ -38,11 +36,12 @@ export const useStore = () => {
       date: store.value.currentDate[0].date,
       add: value,
     });
+    currentDay.value = store.value.currentDate[0].date;
   };
 
   return {
     store,
-    firstDay,
+    currentDay,
     getData,
     onRecover,
     onChange,

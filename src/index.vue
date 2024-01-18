@@ -23,7 +23,7 @@ import { ECalendarType, TData } from './types';
 import { getDaysScope } from '@/date';
 
 const { replenishCurrentDays } = useMonth();
-const { store, getData, firstDay } = useStore();
+const { store, getData, currentDay } = useStore();
 
 const props = defineProps<{ data: { [key: string]: TData[] } }>();
 
@@ -52,7 +52,8 @@ watch(
 watch(
   () => store.value.calendarVisible,
   () => {
-    store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, date: firstDay.value });
+    console.log(122);
+    store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, date: currentDay.value });
   },
   {
     immediate: true,
