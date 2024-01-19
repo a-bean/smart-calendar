@@ -25,7 +25,6 @@ const { store, getData, currentDay } = useStore();
 const props = defineProps<{ data: { [key: string]: TData[] } }>();
 const emitter = defineEmits<{
   (event: 'getDateScope', scope: [string, string]): void;
-  (event: 'update:data', data: { [key: string]: TData[] }): void;
 }>();
 
 onUpdated(() => {

@@ -1,6 +1,6 @@
 <template>
   <div class="h80vh w80vw">
-    <Calendar v-model:data="data" @get-date-scope="getDateScope"></Calendar>
+    <Calendar :data="data" @get-date-scope="getDateScope"></Calendar>
   </div>
 </template>
 <script setup lang="ts">
