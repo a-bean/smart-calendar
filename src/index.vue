@@ -1,19 +1,16 @@
 <template>
-  <div class="h80% w80%">
+  <div class="h100% w100%">
     <CalendarHeader />
-    <DayCalendar v-if="store.calendarVisible === ECalendarType.DAY" />
-    <WeekCalendar v-if="store.calendarVisible === ECalendarType.WEEK" />
-    <MonthCalendar v-if="store.calendarVisible === ECalendarType.MONTH" />
-    <Year v-if="store.calendarVisible === ECalendarType.YEAR" />
+    <component :is="showComponent"></component>
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUpdated, watch } from 'vue';
+import { onUpdated, watch, computed } from 'vue';
 // 组件
 import MonthCalendar from './components/month/month.vue';
 import DayCalendar from './components/day/day.vue';
 import WeekCalendar from './components/week/week.vue';
-import Year from './components/year/year.vue';
+import YearCalendar from './components/year/year.vue';
 import CalendarHeader from './components/calendar-header/index.vue';
 // hooks, utils
 import { useStore } from './hooks/useStore';
@@ -26,22 +23,28 @@ const { replenishCurrentDays } = useMonth();
 const { store, getData, currentDay } = useStore();
 
 const props = defineProps<{ data: { [key: string]: TData[] } }>();
+const emitter = defineEmits<{
+  (event: 'getDateScope', scope: [string, string]): void;
+  (event: 'update:data', data: { [key: string]: TData[] }): void;
+}>();
 
 onUpdated(() => {
   getData(props.data);
 });
 
-// emitter
-const emitter = defineEmits<{
-  (event: 'getDateScope', scope: [string, string]): void;
-}>();
+const components = {
+  [ECalendarType.DAY]: DayCalendar,
+  [ECalendarType.WEEK]: WeekCalendar,
+  [ECalendarType.MONTH]: MonthCalendar,
+  [ECalendarType.YEAR]: YearCalendar,
+};
+const showComponent = computed(() => components[store.value.calendarVisible]);
 
 /*
   [key in Exclude<ECalendarType, ECalendarType.YEAR>]
-  本来应该除去ECalendarType.YEAR，但是
-  这样在使用的emitterFn使用的时候还需要进
-  行类型判断，所以直接写成ECalendarType，
-  代码更加简洁
+  本来应该除去ECalendarType.YEAR，year不需要请求数据，但是
+  这样在使用的emitterFn使用的时候还需要进行类型判断，所以直接
+  写成ECalendarType，代码更加简洁
  */
 const emitterFn: { [key in ECalendarType]: () => void } = {
   [ECalendarType.MONTH]: () => {
@@ -66,7 +69,6 @@ watch(
 watch(
   () => store.value.calendarVisible,
   () => {
-    console.log(122);
     store.value.currentDate = getDaysScope({ type: store.value.calendarVisible, date: currentDay.value });
   },
   {

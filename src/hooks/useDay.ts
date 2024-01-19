@@ -62,7 +62,8 @@ export const useDay = () => {
   };
 
   const formatData = computed(() => {
-    return groupSchedulesByOverlap(store.value.data?.['2024-01-04'] || []);
+    const data = store.value.data?.[store.value.currentDate[0].date] || [];
+    return groupSchedulesByOverlap(data);
   });
 
   let isDragging = false;
@@ -76,7 +77,8 @@ export const useDay = () => {
 
   const mousemove = (e: MouseEvent) => {
     if (!isDragging) return;
-    const target = store.value.data['2024-01-04'].find((item) => item.id === targetId)!;
+    const { date } = store.value.currentDate[0];
+    const target = store.value.data[date].find((item) => item.id === targetId)!;
     const everyPxOfMinute = 60 / (taskBodyHeight.value * (ONE_HOUR_HEIGHT / 100));
     const incrementalTime = everyPxOfMinute * (e.clientY - initialY);
 
@@ -101,7 +103,8 @@ export const useDay = () => {
     isDragging = false;
 
     // 滑动后调整开始或者结束时间，将时间的 分钟 总是调整为15的的倍数
-    const target = store.value.data['2024-01-04'].find((item) => item.id === targetId)!;
+    const { date } = store.value.currentDate[0];
+    const target = store.value.data[date].find((item) => item.id === targetId)!;
     const startRemainder = Number(getDate({ date: target.start, format: 'mm' })) % BEST_TIME_SCALE;
     const endRemainder = Number(getDate({ date: target.end, format: 'mm' })) % BEST_TIME_SCALE;
     const adjustTime = (remainder: number, prop: 'start' | 'end') => {
