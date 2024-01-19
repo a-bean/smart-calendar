@@ -36,16 +36,30 @@ const emitter = defineEmits<{
   (event: 'getDateScope', scope: [string, string]): void;
 }>();
 
+/*
+  [key in Exclude<ECalendarType, ECalendarType.YEAR>]
+  本来应该除去ECalendarType.YEAR，但是
+  这样在使用的emitterFn使用的时候还需要进
+  行类型判断，所以直接写成ECalendarType，
+  代码更加简洁
+ */
+const emitterFn: { [key in ECalendarType]: () => void } = {
+  [ECalendarType.MONTH]: () => {
+    emitter('getDateScope', [replenishCurrentDays.value[0].date, replenishCurrentDays.value[replenishCurrentDays.value.length - 1].date]);
+  },
+  [ECalendarType.DAY]: () => {
+    emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[0].date]);
+  },
+  [ECalendarType.WEEK]: () => {
+    emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[store.value.currentDate.length - 1].date]);
+  },
+  [ECalendarType.YEAR]: () => {},
+};
+
 watch(
   () => store.value.currentDate,
   () => {
-    if (store.value.calendarVisible === ECalendarType.MONTH) {
-      emitter('getDateScope', [replenishCurrentDays.value[0].date, replenishCurrentDays.value[replenishCurrentDays.value.length - 1].date]);
-    } else if (store.value.calendarVisible === ECalendarType.DAY) {
-      emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[0].date]);
-    } else if (store.value.calendarVisible === ECalendarType.WEEK) {
-      emitter('getDateScope', [store.value.currentDate[0].date, store.value.currentDate[store.value.currentDate.length - 1].date]);
-    }
+    emitterFn[store.value.calendarVisible]();
   }
 );
 
