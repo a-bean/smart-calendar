@@ -63,6 +63,8 @@ export const useDay = () => {
 
   const formatData = computed(() => {
     const data = store.value.data?.[store.value.currentDate[0].date] || [];
+    console.log(data);
+    console.log(groupSchedulesByOverlap(data));
     return groupSchedulesByOverlap(data);
   });
 
@@ -142,8 +144,8 @@ export const useDay = () => {
     taskBodyHeight,
     mockData,
     formatData,
-    selectedTask,
     selectedTaskId,
+    selectedTask,
     mousedown,
     mousemove,
     mouseup,

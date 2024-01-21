@@ -19,36 +19,58 @@
     ></div>
 
     <div class="mt-0.6 ml-2">
-      {{ getDate({ date: props.data.start, format: 'HH:mm' }) }} - {{ getDate({ date: props.data.end, format: 'HH:mm' }) }}
+      {{ getDate({ date: props.data.start, format: 'MM-DD HH:mm' }) }} - {{ getDate({ date: props.data.end, format: 'MM-DD HH:mm' }) }}
     </div>
     <div class="ml-2">{{ props.data.name }}</div>
   </div>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
-import { getDate } from '@/date';
+import { getDate, isBefore } from '@/date';
 import { ONE_HOUR_HEIGHT, ETaskMoveType } from '@/config';
 import { useDay } from '@/hooks/useDay';
+import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
 
 const { selectedTask, mousedown, mouseenter } = useDay();
+const { store } = useStore();
 
 const props = defineProps<{
   data: TData;
 }>();
 
 const top = computed(() => {
+  const isSmallThanToday = isBefore(props.data.start, store.value.currentDate[0].date);
+  if (isSmallThanToday) {
+    return 0;
+  }
+
   const hour = getDate({ date: props.data.start, format: 'HH' });
   const minutes = getDate({ date: props.data.start, format: 'mm' });
   return Number(hour) * ONE_HOUR_HEIGHT + Number(minutes) * (ONE_HOUR_HEIGHT / 60);
 });
 
 const height = computed(() => {
-  const startTimeHour = getDate({ date: props.data.start, format: 'HH' });
-  const startTimeMinutes = getDate({ date: props.data.start, format: 'mm' });
+  let startTimeHour = getDate({ date: props.data.start, format: 'HH' });
+  let startTimeMinutes = getDate({ date: props.data.start, format: 'mm' });
 
-  const endTimeHour = getDate({ date: props.data.end, format: 'HH' });
-  const endTimeMinutes = getDate({ date: props.data.end, format: 'mm' });
+  const startIsSmallThanToday = isBefore(props.data.start, store.value.currentDate[0].date);
+
+  if (startIsSmallThanToday) {
+    startTimeHour = '0';
+    startTimeMinutes = '0';
+  }
+
+  let endTimeHour = '0';
+  let endTimeMinutes = '0';
+  const endIsBiggerThanToday = isBefore(store.value.currentDate[0].date, getDate({ date: props.data.end, format: 'YYYY-MM-DD' }));
+
+  if (endIsBiggerThanToday) {
+    endTimeHour = '24';
+  } else {
+    endTimeHour = getDate({ date: props.data.end, format: 'HH' });
+    endTimeMinutes = getDate({ date: props.data.end, format: 'mm' });
+  }
 
   return (
     Number(endTimeHour) * ONE_HOUR_HEIGHT +
