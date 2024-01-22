@@ -12,9 +12,9 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import WeekHeader from './components/week-header.vue';
 import TimeScale from '@/components/time-scale/time-scale.vue';
 import WeekBody from './components/week-body.vue';
-import { useDay } from '@/hooks/useDay';
+import { useWeek } from '@/hooks/useWeek';
 
-const { taskBodyHeight } = useDay();
+const { taskBodyHeight } = useWeek();
 
 const bodyRef = ref<HTMLElement | null>(null);
 const getBodyHeight = () => {

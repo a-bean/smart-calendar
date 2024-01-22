@@ -94,8 +94,12 @@ const doSchedulesOverlap = (schedule1: TData, schedule2: TData) => {
   return start1 < end2 && end1 > start2;
 };
 
-export const groupSchedulesByOverlap = (schedules: TData[]) => {
+export const groupSchedulesByOverlap = (schedules?: TData[]) => {
   const result: TData[][] = [];
+
+  if (!schedules) {
+    return result;
+  }
 
   for (let i = 0; i < schedules.length; i++) {
     const resultIds = result.flat().map((item) => item.id);
