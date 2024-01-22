@@ -11,51 +11,6 @@ const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
 const { store } = useStore();
 
-const mockData = ref<TData[]>([
-  {
-    id: 2,
-    name: '新建日程',
-    start: '2021-08-01 2:00',
-    end: '2021-08-01 4:00',
-  },
-  // {
-  //   id: 3,
-  //   name: '新建日程',
-  //   start: '2021-08-01 3:00',
-  //   end: '2021-08-01 5:00',
-  // },
-  // {
-  //   id: 8,
-  //   name: '新建日程',
-  //   start: '2021-08-01 3:30',
-  //   end: '2021-08-01 5:00',
-  // },
-  // {
-  //   id: 4,
-  //   name: '新建日程',
-  //   start: '2021-08-01 5:00',
-  //   end: '2021-08-01 6:00',
-  // },
-  // {
-  //   id: 5,
-  //   name: '新建日程',
-  //   start: '2021-08-01 5:00',
-  //   end: '2021-08-01 7:00',
-  // },
-  // {
-  //   id: 6,
-  //   name: '新建日程',
-  //   start: '2021-08-01 10:00',
-  //   end: '2021-08-01 11:00',
-  // },
-  {
-    id: 7,
-    name: '新建日程',
-    start: '2021-08-01 11:00',
-    end: '2021-08-01 12:00',
-  },
-]);
-
 export const useDay = () => {
   const selectedTask = (id: number) => {
     selectedTaskId.value = id;
@@ -142,7 +97,6 @@ export const useDay = () => {
 
   return {
     taskBodyHeight,
-    mockData,
     formatData,
     selectedTaskId,
     selectedTask,
