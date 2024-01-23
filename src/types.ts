@@ -22,6 +22,8 @@ export type TData = {
   name: string;
   start: string;
   end: string;
+  /** 用来表示task是不是因为 显示 需要而新增出来的(目前只在week中有用) */
+  hidden?: boolean;
 };
 
 export type TYearDate = {

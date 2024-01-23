@@ -1,7 +1,6 @@
 import { computed, ref } from 'vue';
 import { ETaskMoveType, ONE_HOUR_HEIGHT } from '@/config';
 import { getTimeInterval, getDate } from '@/date';
-import { TData } from '@/types';
 import { groupSchedulesByOverlap } from '@/utils';
 import { useStore } from '@/hooks/useStore';
 

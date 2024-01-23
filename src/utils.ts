@@ -1,5 +1,5 @@
-import { TData, TDate } from '@/types';
-import { getDate, isBefore } from '@/date';
+import { TData } from '@/types';
+import { getDate, getTimeInterval } from '@/date';
 
 /**
  * @function: convertTo2DArray
@@ -147,16 +147,15 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
     }
 
     for (let i = 0; i < dataCopy[date].length; i++) {
-      const endBigger = isBefore(
-        getDate({ date: dataCopy[date][i].start, format: 'YYYY-MM-DD' }),
-        getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD' })
-      );
-
-      if (endBigger) {
+      let interval = getTimeInterval({ bigDate: dataCopy[date][i].end, smallDate: dataCopy[date][i].start, unit: 'day' });
+      let add = 1;
+      while (interval > 0) {
         const oldEnd = dataCopy[date][i].end;
-        dataCopy[date][i].end = getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' });
-
-        const nextDayKey = getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD' });
+        const nextDayKey = getDate({ date: dataCopy[date][i].start, add, type: 'day', format: 'YYYY-MM-DD' });
+        // 如果不存在下一天的数据，就创建一个
+        if (!dataCopy[nextDayKey]) {
+          dataCopy[nextDayKey] = [];
+        }
         // 已经存在相同的id项了，说明是同一个任务，只是跨天了
         if (dataCopy[nextDayKey].some((item) => item.id === dataCopy[date][i].id)) {
           const targetIndex = dataCopy[nextDayKey].findIndex((item) => item.id === dataCopy[date][i].id);
@@ -164,6 +163,7 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
             ...dataCopy[date][i],
             start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
             end: oldEnd,
+            hidden: true,
           };
         } else {
           // 不存在相同的id项，说明是不同的任务，需要新增
@@ -171,8 +171,11 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
             ...dataCopy[date][i],
             start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
             end: oldEnd,
+            hidden: true,
           });
         }
+        interval--;
+        add++;
       }
     }
   }
