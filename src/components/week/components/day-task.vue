@@ -29,10 +29,7 @@ import { computed } from 'vue';
 import { getDate, isBefore } from '@/date';
 import { ONE_HOUR_HEIGHT, ETaskMoveType } from '@/config';
 import { useWeek } from '@/hooks/useWeek';
-import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
-
-const { store } = useStore();
 
 const props = defineProps<{
   data: TData;
@@ -42,7 +39,7 @@ const props = defineProps<{
 const { selectedTask, mousedown, mouseenter } = useWeek(props.dateKey);
 
 const top = computed(() => {
-  const isSmallThanToday = isBefore(props.data.start, store.value.currentDate[0].date);
+  const isSmallThanToday = isBefore(props.data.start, props.dateKey);
   if (isSmallThanToday) {
     return 0;
   }
@@ -56,7 +53,7 @@ const height = computed(() => {
   let startTimeHour = getDate({ date: props.data.start, format: 'HH' });
   let startTimeMinutes = getDate({ date: props.data.start, format: 'mm' });
 
-  const startIsSmallThanToday = isBefore(props.data.start, store.value.currentDate[0].date);
+  const startIsSmallThanToday = isBefore(props.data.start, props.dateKey);
 
   if (startIsSmallThanToday) {
     startTimeHour = '0';
@@ -65,7 +62,7 @@ const height = computed(() => {
 
   let endTimeHour = '0';
   let endTimeMinutes = '0';
-  const endIsBiggerThanToday = isBefore(store.value.currentDate[0].date, getDate({ date: props.data.end, format: 'YYYY-MM-DD' }));
+  const endIsBiggerThanToday = isBefore(props.dateKey, getDate({ date: props.data.end, format: 'YYYY-MM-DD' }));
 
   if (endIsBiggerThanToday) {
     endTimeHour = '24';

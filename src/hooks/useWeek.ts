@@ -1,9 +1,8 @@
 import { computed, ref } from 'vue';
 import { ETaskMoveType, ONE_HOUR_HEIGHT } from '@/config';
 import { getTimeInterval, getDate } from '@/date';
-import { TData } from '@/types';
-import { groupSchedulesByOverlap } from '@/utils';
 import { useStore } from '@/hooks/useStore';
+import { formatWeekTask } from '@/utils';
 
 const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
@@ -12,16 +11,12 @@ const taskBodyHeight = ref(0);
 const { store } = useStore();
 
 export const useWeek = (dateKey?: string) => {
-  console.log(dateKey);
   const selectedTask = (id: number) => {
     selectedTaskId.value = id;
   };
 
-  const formatData = computed(() => {
-    const data = store.value.data?.[store.value.currentDate[0].date] || [];
-    console.log(data);
-    console.log(groupSchedulesByOverlap(data));
-    return groupSchedulesByOverlap(data);
+  const formatDataWeekData = computed(() => {
+    return formatWeekTask(store.value.data);
   });
 
   let isDragging = false;
@@ -95,8 +90,8 @@ export const useWeek = (dateKey?: string) => {
   };
 
   return {
+    formatDataWeekData,
     taskBodyHeight,
-    formatData,
     selectedTaskId,
     selectedTask,
     mousedown,

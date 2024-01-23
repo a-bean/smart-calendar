@@ -1,4 +1,5 @@
 import { TData, TDate } from '@/types';
+import { getDate, isBefore } from '@/date';
 
 /**
  * @function: convertTo2DArray
@@ -61,6 +62,13 @@ export const typeOf = (obj: unknown): string => {
   return res;
 };
 
+/**
+ * @function : findTaskById
+ * @description : 找到指定id的任务
+ * @param {number} idToFind
+ * @param {{ [key: string]: TData[] }} data
+ * @return {TData | null}
+ */
 export const findTaskById = (idToFind: number, data: { [key: string]: TData[] }) => {
   for (const key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
@@ -74,18 +82,6 @@ export const findTaskById = (idToFind: number, data: { [key: string]: TData[] })
   return null;
 };
 
-export const countItemsWithId = (idToCount: number, data: (TDate & { dataList: TData[] })[][]): number => {
-  let count = 0;
-  data.flat().forEach((item) => {
-    item.dataList.forEach((d) => {
-      if (d.id === idToCount) {
-        count++;
-      }
-    });
-  });
-  return count;
-};
-
 const doSchedulesOverlap = (schedule1: TData, schedule2: TData) => {
   const start1 = new Date(schedule1.start).getTime();
   const end1 = new Date(schedule1.end).getTime();
@@ -94,7 +90,13 @@ const doSchedulesOverlap = (schedule1: TData, schedule2: TData) => {
   return start1 < end2 && end1 > start2;
 };
 
-export const groupSchedulesByOverlap = (schedules?: TData[]) => {
+/**
+ * @function : groupSchedulesByOverlap
+ * @description : 将重叠的任务分组
+ * @param {TData[]} schedules
+ * @return {TData[][]}
+ */
+export const groupSchedulesByOverlap = (schedules?: TData[]): TData[][] => {
   const result: TData[][] = [];
 
   if (!schedules) {
@@ -116,4 +118,63 @@ export const groupSchedulesByOverlap = (schedules?: TData[]) => {
     result.push(arr);
   }
   return result;
+};
+
+/**
+ * @function : formatWeekTask
+ * @description : 格式化数据：将数据按照时间段分组
+ * @param {{ [key: string]: TData[] }} events
+ * @return {{ [key: string]: TData[] }}
+ * @example
+ *  {
+ *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00:00', end: '2024-01-22 07:00:00' },],
+ *   '2024-01-22': [{ id: 15, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 06:00:00' }]
+ *  } 转化成 ==>
+ *  {
+ *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00:00', end: '2024-01-22 00:00:00' },],
+ *   '2024-01-22': [
+ *     { id: 14, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 07:00:00' },
+ *     { id: 15, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 06:00:00' }
+ *   ]
+ *  }
+ */
+export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: string]: TData[] } => {
+  const dataCopy: { [key: string]: TData[] } = JSON.parse(JSON.stringify(events));
+
+  for (const date in dataCopy) {
+    if (!Object.prototype.hasOwnProperty.call(dataCopy, date)) {
+      continue;
+    }
+
+    for (let i = 0; i < dataCopy[date].length; i++) {
+      const endBigger = isBefore(
+        getDate({ date: dataCopy[date][i].start, format: 'YYYY-MM-DD' }),
+        getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD' })
+      );
+
+      if (endBigger) {
+        const oldEnd = dataCopy[date][i].end;
+        dataCopy[date][i].end = getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' });
+
+        const nextDayKey = getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD' });
+        // 已经存在相同的id项了，说明是同一个任务，只是跨天了
+        if (dataCopy[nextDayKey].some((item) => item.id === dataCopy[date][i].id)) {
+          const targetIndex = dataCopy[nextDayKey].findIndex((item) => item.id === dataCopy[date][i].id);
+          dataCopy[nextDayKey][targetIndex] = {
+            ...dataCopy[date][i],
+            start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
+            end: oldEnd,
+          };
+        } else {
+          // 不存在相同的id项，说明是不同的任务，需要新增
+          dataCopy[nextDayKey].unshift({
+            ...dataCopy[date][i],
+            start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
+            end: oldEnd,
+          });
+        }
+      }
+    }
+  }
+  return dataCopy;
 };
