@@ -127,19 +127,20 @@ export const groupSchedulesByOverlap = (schedules?: TData[]): TData[][] => {
  * @return {{ [key: string]: TData[] }}
  * @example
  *  {
- *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00:00', end: '2024-01-22 07:00:00' },],
- *   '2024-01-22': [{ id: 15, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 06:00:00' }]
+ *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00', end: '2024-01-22 07:00' },],
+ *   '2024-01-22': [{ id: 15, name: '库里', start: '2024-01-22 00:00', end: '2024-01-22 06:00' }]
  *  } 转化成 ==>
  *  {
- *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00:00', end: '2024-01-22 00:00:00' },],
+ *   '2024-01-21': [ { id: 14, name: '库里', start: '2024-01-21 03:00', end: '2024-01-22 00:00' },],
  *   '2024-01-22': [
- *     { id: 14, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 07:00:00' },
- *     { id: 15, name: '库里', start: '2024-01-22 00:00:00', end: '2024-01-22 06:00:00' }
+ *     { id: 14, name: '库里', start: '2024-01-22 00:00', end: '2024-01-22 07:00' },
+ *     { id: 15, name: '库里', start: '2024-01-22 00:00', end: '2024-01-22 06:00' }
  *   ]
  *  }
  */
 export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: string]: TData[] } => {
   const dataCopy: { [key: string]: TData[] } = JSON.parse(JSON.stringify(events));
+  console.log('dataCopy', dataCopy);
 
   for (const date in dataCopy) {
     if (!Object.prototype.hasOwnProperty.call(dataCopy, date)) {
@@ -147,29 +148,44 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
     }
 
     for (let i = 0; i < dataCopy[date].length; i++) {
-      let interval = getTimeInterval({ bigDate: dataCopy[date][i].end, smallDate: dataCopy[date][i].start, unit: 'day' });
+      const key = getDate({ date: dataCopy[date][i].start, format: 'YYYY-MM-DD' });
+      // 判断task的开始时间跟task数据的key是否相同，如果不同，说明跨天了，需要将task数据移动到对应的key中
+      if (date !== key) {
+        if (!dataCopy[key]) {
+          dataCopy[key] = [];
+        }
+        dataCopy[key].unshift(dataCopy[date][i]);
+        dataCopy[date] = dataCopy[date].filter((item) => item.id !== dataCopy[date][i].id);
+      }
+
+      let interval = getTimeInterval({
+        bigDate: getDate({ date: dataCopy[key][i]?.end, format: 'YYYY-MM-DD' }),
+        smallDate: getDate({ date: dataCopy[key][i]?.start, format: 'YYYY-MM-DD' }),
+        unit: 'day',
+      });
+
       let add = 1;
       while (interval > 0) {
-        const oldEnd = dataCopy[date][i].end;
-        const nextDayKey = getDate({ date: dataCopy[date][i].start, add, type: 'day', format: 'YYYY-MM-DD' });
+        const oldEnd = dataCopy[key][i].end;
+        const nextDayKey = getDate({ date: dataCopy[key][i].start, add, type: 'day', format: 'YYYY-MM-DD' });
         // 如果不存在下一天的数据，就创建一个
         if (!dataCopy[nextDayKey]) {
           dataCopy[nextDayKey] = [];
         }
         // 已经存在相同的id项了，说明是同一个任务，只是跨天了
-        if (dataCopy[nextDayKey].some((item) => item.id === dataCopy[date][i].id)) {
-          const targetIndex = dataCopy[nextDayKey].findIndex((item) => item.id === dataCopy[date][i].id);
+        if (dataCopy[nextDayKey].some((item) => item.id === dataCopy[key][i].id)) {
+          const targetIndex = dataCopy[nextDayKey].findIndex((item) => item.id === dataCopy[key][i].id);
           dataCopy[nextDayKey][targetIndex] = {
-            ...dataCopy[date][i],
-            start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
+            ...dataCopy[key][i],
+            start: getDate({ date: nextDayKey, format: 'YYYY-MM-DD 00:00' }),
             end: oldEnd,
             hidden: true,
           };
         } else {
           // 不存在相同的id项，说明是不同的任务，需要新增
           dataCopy[nextDayKey].unshift({
-            ...dataCopy[date][i],
-            start: getDate({ date: dataCopy[date][i].end, format: 'YYYY-MM-DD 00:00:00' }),
+            ...dataCopy[key][i],
+            start: getDate({ date: nextDayKey, format: 'YYYY-MM-DD 00:00' }),
             end: oldEnd,
             hidden: true,
           });
