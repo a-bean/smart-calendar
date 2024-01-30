@@ -140,7 +140,6 @@ export const groupSchedulesByOverlap = (schedules?: TData[]): TData[][] => {
  */
 export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: string]: TData[] } => {
   const dataCopy: { [key: string]: TData[] } = JSON.parse(JSON.stringify(events));
-  console.log('dataCopy', dataCopy);
 
   for (const date in dataCopy) {
     if (!Object.prototype.hasOwnProperty.call(dataCopy, date)) {
@@ -149,6 +148,7 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
 
     for (let i = 0; i < dataCopy[date].length; i++) {
       const key = getDate({ date: dataCopy[date][i].start, format: 'YYYY-MM-DD' });
+      const oldTask = dataCopy[date][i];
       // 判断task的开始时间跟task数据的key是否相同，如果不同，说明跨天了，需要将task数据移动到对应的key中
       if (date !== key) {
         if (!dataCopy[key]) {
@@ -156,27 +156,28 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
         }
         dataCopy[key].unshift(dataCopy[date][i]);
         dataCopy[date] = dataCopy[date].filter((item) => item.id !== dataCopy[date][i].id);
+        i--;
       }
 
       let interval = getTimeInterval({
-        bigDate: getDate({ date: dataCopy[key][i]?.end, format: 'YYYY-MM-DD' }),
-        smallDate: getDate({ date: dataCopy[key][i]?.start, format: 'YYYY-MM-DD' }),
+        bigDate: getDate({ date: oldTask?.end, format: 'YYYY-MM-DD' }),
+        smallDate: getDate({ date: oldTask?.start, format: 'YYYY-MM-DD' }),
         unit: 'day',
       });
 
       let add = 1;
       while (interval > 0) {
-        const oldEnd = dataCopy[key][i].end;
-        const nextDayKey = getDate({ date: dataCopy[key][i].start, add, type: 'day', format: 'YYYY-MM-DD' });
+        const oldEnd = oldTask.end;
+        const nextDayKey = getDate({ date: oldTask.start, add, type: 'day', format: 'YYYY-MM-DD' });
         // 如果不存在下一天的数据，就创建一个
         if (!dataCopy[nextDayKey]) {
           dataCopy[nextDayKey] = [];
         }
         // 已经存在相同的id项了，说明是同一个任务，只是跨天了
-        if (dataCopy[nextDayKey].some((item) => item.id === dataCopy[key][i].id)) {
+        if (dataCopy[nextDayKey].some((item) => item.id === oldTask.id)) {
           const targetIndex = dataCopy[nextDayKey].findIndex((item) => item.id === dataCopy[key][i].id);
           dataCopy[nextDayKey][targetIndex] = {
-            ...dataCopy[key][i],
+            ...oldTask,
             start: getDate({ date: nextDayKey, format: 'YYYY-MM-DD 00:00' }),
             end: oldEnd,
             hidden: true,
@@ -184,7 +185,7 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
         } else {
           // 不存在相同的id项，说明是不同的任务，需要新增
           dataCopy[nextDayKey].unshift({
-            ...dataCopy[key][i],
+            ...oldTask,
             start: getDate({ date: nextDayKey, format: 'YYYY-MM-DD 00:00' }),
             end: oldEnd,
             hidden: true,
@@ -195,5 +196,6 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
       }
     }
   }
+  console.log('dataCopy', dataCopy);
   return dataCopy;
 };
