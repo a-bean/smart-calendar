@@ -27,7 +27,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps, computed } from 'vue';
+import { computed } from 'vue';
 import { getDate, getLunarDay, weeks } from '@/date';
 import { convertTo2DArray } from '@/utils';
 import { TYearDate } from '@/types';

@@ -8,7 +8,7 @@ const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
 const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
-const { store } = useStore();
+const { store, onTaskChange } = useStore();
 
 export const useDay = () => {
   const selectedTask = (id: number) => {
@@ -17,8 +17,6 @@ export const useDay = () => {
 
   const formatData = computed(() => {
     const data = store.value.data?.[store.value.currentDate[0].date] || [];
-    console.log(data);
-    console.log(groupSchedulesByOverlap(data));
     return groupSchedulesByOverlap(data);
   });
 
@@ -74,6 +72,7 @@ export const useDay = () => {
       adjustTime(endRemainder, 'end');
     }
 
+    onTaskChange.value?.(target);
     window.removeEventListener('mouseup', mouseup);
     window.removeEventListener('mousemove', mousemove);
   };

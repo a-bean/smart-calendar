@@ -19,13 +19,18 @@ import { useMonth } from '@/hooks/useMonth';
 import { ECalendarType, TData } from './types';
 import { getDaysScope } from '@/date';
 
-const { replenishCurrentDays } = useMonth();
-const { store, getData, currentDay } = useStore();
-
 const props = defineProps<{ data: { [key: string]: TData[] } }>();
 const emitter = defineEmits<{
   (event: 'getDateScope', scope: [string, string]): void;
+  (event: 'change', data: TData): void;
 }>();
+
+const { store, getData, currentDay, onTaskChange } = useStore();
+const { replenishCurrentDays } = useMonth();
+
+onTaskChange.value = (data: TData) => {
+  emitter('change', data);
+};
 
 onUpdated(() => {
   getData(props.data);

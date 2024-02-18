@@ -9,7 +9,7 @@ const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
 const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
-const { store } = useStore();
+const { store, onTaskChange } = useStore();
 
 export const useWeek = () => {
   const selectedTask = (id: number) => {
@@ -90,6 +90,8 @@ export const useWeek = () => {
     if (moveType === ETaskMoveType.MOVE_BOTTOM || moveType === ETaskMoveType.MOVE_WHOLE) {
       adjustTime(endRemainder, 'end');
     }
+
+    onTaskChange.value?.(target!);
 
     window.removeEventListener('mouseup', mouseup);
     window.removeEventListener('mousemove', mousemove);

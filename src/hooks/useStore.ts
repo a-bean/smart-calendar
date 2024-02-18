@@ -9,10 +9,12 @@ type TStore = {
 };
 
 const store = ref<TStore>({
-  calendarVisible: ECalendarType.WEEK,
+  calendarVisible: ECalendarType.DAY,
   data: {},
   currentDate: [],
 });
+
+const onTaskChange = ref<(data: TData) => void>();
 
 const currentDay = ref<string | Date>(new Date());
 
@@ -45,5 +47,6 @@ export const useStore = () => {
     getData,
     onRecover,
     onChange,
+    onTaskChange,
   };
 };

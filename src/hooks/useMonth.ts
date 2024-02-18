@@ -5,7 +5,7 @@ import { convertTo2DArray, findDropTargetDate, findTaskById } from '@/utils';
 import { TData, TDate } from '@/types';
 import { useStore } from '@/hooks/useStore';
 
-const { store } = useStore();
+const { store, onTaskChange } = useStore();
 const taskBoxWidth = ref<number>(); // 记录任务盒子的宽度
 
 const dragData = reactive<{
@@ -192,6 +192,7 @@ export const useMonth = () => {
       // task不跨天就加在后面
       store.value.data[newKey].push(newTask);
     }
+    onTaskChange.value?.(newTask);
   };
 
   const selectedTask = (id: number) => {

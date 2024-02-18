@@ -117,6 +117,7 @@ export const groupSchedulesByOverlap = (schedules?: TData[]): TData[][] => {
     }
     result.push(arr);
   }
+  console.log('result', result);
   return result;
 };
 
@@ -196,6 +197,5 @@ export const formatWeekTask = (events: { [key: string]: TData[] }): { [key: stri
       }
     }
   }
-  console.log('dataCopy', dataCopy);
   return dataCopy;
 };
