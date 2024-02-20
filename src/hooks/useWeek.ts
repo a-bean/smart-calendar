@@ -73,6 +73,7 @@ export const useWeek = () => {
         break;
       }
     }
+    const oldDate = JSON.parse(JSON.stringify(target!));
     const startRemainder = Number(getDate({ date: target!.start, format: 'mm' })) % BEST_TIME_SCALE;
     const endRemainder = Number(getDate({ date: target!.end, format: 'mm' })) % BEST_TIME_SCALE;
     const adjustTime = (remainder: number, prop: 'start' | 'end') => {
@@ -86,7 +87,10 @@ export const useWeek = () => {
       adjustTime(endRemainder, 'end');
     }
 
-    onTaskChange.value?.(target!);
+    // 如果时间有变化，触发回调
+    if (oldDate.start !== target!.start || oldDate.end !== target!.end) {
+      onTaskChange.value?.(target!);
+    }
 
     window.removeEventListener('mouseup', mouseup);
     window.removeEventListener('mousemove', mousemove);

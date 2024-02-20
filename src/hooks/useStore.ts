@@ -47,6 +47,43 @@ export const useStore = () => {
     store.value.selectedTaskId = id;
   };
 
+  const deleteTask = () => {
+    if (!store.value.selectedTaskId) return;
+
+    // 删除任务。通过store.value.selectedTaskId删除store.value.data中的数据
+    for (const key in store.value.data) {
+      if (Object.prototype.hasOwnProperty.call(store.value.data, key)) {
+        store.value.data[key] = store.value.data[key].filter((item) => item.id !== store.value.selectedTaskId);
+      }
+    }
+  };
+
+  let isPressedMeta = false;
+  const clickMeta = () => {
+    isPressedMeta = true;
+  };
+
+  const clickBackspace = () => {
+    if (isPressedMeta) {
+      deleteTask();
+    }
+  };
+
+  const onKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Meta') {
+      clickMeta();
+    }
+    if (e.key === 'Backspace') {
+      clickBackspace();
+    }
+  };
+
+  const onKeyup = (e: KeyboardEvent) => {
+    if (e.key === 'Meta') {
+      isPressedMeta = false;
+    }
+  };
+
   return {
     store,
     currentDay,
@@ -55,5 +92,8 @@ export const useStore = () => {
     onChange,
     onTaskChange,
     selectedTask,
+    deleteTask,
+    onKeydown,
+    onKeyup,
   };
 };

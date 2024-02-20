@@ -26,6 +26,7 @@ export const useDay = () => {
 
   const mousemove = (e: MouseEvent) => {
     if (!isDragging) return;
+
     const { date } = store.value.currentDate[0];
     const target = store.value.data[date].find((item) => item.id === targetId)!;
     const everyPxOfMinute = 60 / (taskBodyHeight.value * (ONE_HOUR_HEIGHT / 100));
@@ -54,6 +55,7 @@ export const useDay = () => {
     // 滑动后调整开始或者结束时间，将时间的 分钟 总是调整为15的的倍数
     const { date } = store.value.currentDate[0];
     const target = store.value.data[date].find((item) => item.id === targetId)!;
+    const oldDate = JSON.parse(JSON.stringify(target));
     const startRemainder = Number(getDate({ date: target.start, format: 'mm' })) % BEST_TIME_SCALE;
     const endRemainder = Number(getDate({ date: target.end, format: 'mm' })) % BEST_TIME_SCALE;
     const adjustTime = (remainder: number, prop: 'start' | 'end') => {
@@ -66,8 +68,11 @@ export const useDay = () => {
     if (moveType === ETaskMoveType.MOVE_BOTTOM || moveType === ETaskMoveType.MOVE_WHOLE) {
       adjustTime(endRemainder, 'end');
     }
+    // 如果时间有变化，触发回调
+    if (oldDate.start !== target.start || oldDate.end !== target.end) {
+      onTaskChange.value?.(target);
+    }
 
-    onTaskChange.value?.(target);
     window.removeEventListener('mouseup', mouseup);
     window.removeEventListener('mousemove', mousemove);
   };

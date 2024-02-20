@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onUpdated, watch, computed } from 'vue';
+import { onUpdated, watch, computed, onUnmounted } from 'vue';
 // 组件
 import MonthCalendar from './components/month/month.vue';
 import DayCalendar from './components/day/day.vue';
@@ -25,7 +25,7 @@ const emitter = defineEmits<{
   (event: 'change', data: TData): void;
 }>();
 
-const { store, getData, currentDay, onTaskChange } = useStore();
+const { store, getData, currentDay, onTaskChange, onKeydown, onKeyup } = useStore();
 const { replenishCurrentDays } = useMonth();
 
 onTaskChange.value = (data: TData) => {
@@ -79,4 +79,11 @@ watch(
     immediate: true,
   }
 );
+
+window.addEventListener('keydown', onKeydown);
+window.addEventListener('keyup', onKeyup);
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeydown);
+  window.removeEventListener('keyup', onKeyup);
+});
 </script>
