@@ -29,8 +29,6 @@ const dragData = reactive<{
   targetEnd: '',
 });
 
-const selectedTaskId = ref(0);
-
 export const useMonth = () => {
   /** 填满日历 */
   const replenishCurrentDays = computed((): TDate[] => {
@@ -195,10 +193,6 @@ export const useMonth = () => {
     onTaskChange.value?.(newTask);
   };
 
-  const selectedTask = (id: number) => {
-    selectedTaskId.value = id;
-  };
-
   return {
     // data
     replenishCurrentDays,
@@ -209,8 +203,5 @@ export const useMonth = () => {
     onDragover,
     onDrop,
     onDragStart,
-    // 选择任务
-    selectedTaskId,
-    selectedTask,
   };
 };

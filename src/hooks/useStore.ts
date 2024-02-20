@@ -6,12 +6,14 @@ type TStore = {
   data: { [key: string]: TData[] };
   calendarVisible: ECalendarType;
   currentDate: TDate[];
+  selectedTaskId: number;
 };
 
 const store = ref<TStore>({
   calendarVisible: ECalendarType.DAY,
   data: {},
   currentDate: [],
+  selectedTaskId: 0,
 });
 
 const onTaskChange = ref<(data: TData) => void>();
@@ -41,6 +43,10 @@ export const useStore = () => {
     currentDay.value = store.value.currentDate[0].date;
   };
 
+  const selectedTask = (id: number) => {
+    store.value.selectedTaskId = id;
+  };
+
   return {
     store,
     currentDay,
@@ -48,5 +54,6 @@ export const useStore = () => {
     onRecover,
     onChange,
     onTaskChange,
+    selectedTask,
   };
 };

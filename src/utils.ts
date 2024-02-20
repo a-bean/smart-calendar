@@ -108,16 +108,20 @@ export const groupSchedulesByOverlap = (schedules?: TData[]): TData[][] => {
     if (resultIds.includes(schedules[i].id)) {
       continue;
     }
+
     const arr: TData[] = [schedules[i]];
     for (let j = i + 1; j < schedules.length; j++) {
-      const overlappingSchedule = doSchedulesOverlap(schedules[i], schedules[j]);
-      if (!resultIds.includes(schedules[j].id) && overlappingSchedule) {
+      if (resultIds.includes(schedules[j].id)) {
+        continue;
+      }
+
+      const overlappingSchedule = arr.some((item) => doSchedulesOverlap(item, schedules[j]));
+      if (overlappingSchedule) {
         arr.push(schedules[j]);
       }
     }
     result.push(arr);
   }
-  console.log('result', result);
   return result;
 };
 

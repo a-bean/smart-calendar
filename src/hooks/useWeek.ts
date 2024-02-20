@@ -7,15 +7,10 @@ import { TData } from '@/types';
 
 const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
-const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
 const { store, onTaskChange } = useStore();
 
 export const useWeek = () => {
-  const selectedTask = (id: number) => {
-    selectedTaskId.value = id;
-  };
-
   const formatDataWeekData = computed(() => {
     return formatWeekTask(store.value.data);
   });
@@ -116,8 +111,6 @@ export const useWeek = () => {
   return {
     formatDataWeekData,
     taskBodyHeight,
-    selectedTaskId,
-    selectedTask,
     mousedown,
     mousemove,
     mouseup,

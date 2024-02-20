@@ -6,15 +6,10 @@ import { useStore } from '@/hooks/useStore';
 
 const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
-const selectedTaskId = ref(0);
 const taskBodyHeight = ref(0);
 const { store, onTaskChange } = useStore();
 
 export const useDay = () => {
-  const selectedTask = (id: number) => {
-    selectedTaskId.value = id;
-  };
-
   const formatData = computed(() => {
     const data = store.value.data?.[store.value.currentDate[0].date] || [];
     return groupSchedulesByOverlap(data);
@@ -96,8 +91,6 @@ export const useDay = () => {
   return {
     taskBodyHeight,
     formatData,
-    selectedTaskId,
-    selectedTask,
     mousedown,
     mousemove,
     mouseup,

@@ -1,29 +1,26 @@
 <template>
   <div
-    class="month-task"
-    :class="{
-      'bg-blue color-white': props.data?.id === selectedTaskId,
-      invisible: typeof props.data?.id === 'string',
-      'bg-blue-500 bg-opacity-50': getTimeInterval({ bigDate: props.data?.end, smallDate: props.data?.start, unit: 'day' }) > 1,
-    }"
+    class="month-task task-default-opacity"
+    :class="{ 'task-active-opacity': props.data?.id === store.selectedTaskId, invisible: typeof props.data?.id === 'string' }"
+    :style="{ backgroundColor: props.data?.color }"
     draggable="true"
     :data-id="props.data?.id"
     @click="selectedTask(props.data!.id as number)"
     @dragstart="(e) => onDragStart(e, props.data)"
   >
     <div class="flex flex-items-center">
-      <div class="month-task-point" :class="{ ' bg-white': props.data?.id === selectedTaskId }"></div>
-      {{ props.data?.name }} {{ getTimeInterval({ bigDate: props.data?.end, smallDate: props.data?.end, unit: 'day' }) }}
+      <div class="month-task-point"></div>
+      {{ props.data?.name }}
     </div>
-    <div>{{ props.data?.id }}</div>
   </div>
 </template>
 <script setup lang="ts">
 import { useMonth } from '@/hooks/useMonth';
+import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
-import { getTimeInterval } from '@/date';
 
-const { onDragStart, selectedTaskId, selectedTask } = useMonth();
+const { onDragStart } = useMonth();
+const { selectedTask, store } = useStore();
 
 const props = defineProps<{
   data?: TData;
@@ -32,9 +29,16 @@ const props = defineProps<{
 
 <style>
 .month-task {
-  @apply h4 font-size-2.8 border-rd pl-2 pr-2 flex flex-items-center justify-between box-border relative z1;
+  @apply h4 font-size-2.8 border-rd pl-2 pr-2 flex flex-items-center justify-between box-border relative z1 bg-blue color-white;
 }
 .month-task-point {
-  @apply h1.4 w1.4 b-rd-50% mr1 bg-blue;
+  @apply h1.4 w1.4 b-rd-50% mr1 bg-white;
+}
+
+.task-default-opacity {
+  opacity: 0.7;
+}
+.task-active-opacity {
+  opacity: 1;
 }
 </style>

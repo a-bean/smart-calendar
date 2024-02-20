@@ -1,7 +1,8 @@
 <template>
   <div
-    class="day-task"
-    :style="{ top: `${top}%`, height: `${height}%` }"
+    class="task-default-opacity day-task"
+    :class="{ 'task-active-opacity': props.data?.id === store.selectedTaskId }"
+    :style="{ top: `${top}%`, height: `${height}%`, backgroundColor: props.data.color, borderColor: props.data.color }"
     @click="selectedTask(props.data.id as number)"
     @mousedown="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_WHOLE)"
   >
@@ -17,10 +18,10 @@
       @mousedown.stop="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_BOTTOM)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_BOTTOM)"
     ></div>
-    <div class="mt-0.6 ml-2">
+    <div class="mt-0.6 ml-2">{{ props.data.name }}</div>
+    <div class="ml-2">
       {{ getDate({ date: props.data.start, format: 'MM-DD HH:mm' }) }} - {{ getDate({ date: props.data.end, format: 'MM-DD HH:mm' }) }}
     </div>
-    <div class="ml-2">{{ props.data.name }}{{ props.data.id }}</div>
   </div>
 </template>
 <script setup lang="ts">
@@ -28,6 +29,7 @@ import { computed } from 'vue';
 import { getDate, isBefore } from '@/date';
 import { ONE_HOUR_HEIGHT, ETaskMoveType } from '@/config';
 import { useWeek } from '@/hooks/useWeek';
+import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
 
 const props = defineProps<{
@@ -35,7 +37,8 @@ const props = defineProps<{
   dateKey: string;
 }>();
 
-const { selectedTask, mousedown, mouseenter } = useWeek();
+const { mousedown, mouseenter } = useWeek();
+const { selectedTask, store } = useStore();
 
 const top = computed(() => {
   const isSmallThanToday = isBefore(props.data.start, props.dateKey);
@@ -79,7 +82,7 @@ const height = computed(() => {
 </script>
 <style>
 .day-task {
-  @apply w100% bg-blue bg-opacity-60 b-rd-2 font-size-3 color-white b-l-solid b-l-4 b-blue box-border position-absolute;
+  @apply w100% bg-blue font-size-3 color-white box-border position-absolute;
 }
 
 .day-drag-line {

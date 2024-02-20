@@ -1,7 +1,8 @@
 <template>
   <div
-    class="day-task"
-    :style="{ top: `${top}%`, height: `${height}%` }"
+    class="task-default-opacity day-task"
+    :class="{ 'task-active-opacity': props.data?.id === store.selectedTaskId }"
+    :style="{ top: `${top}%`, height: `${height}%`, backgroundColor: props.data.color, borderColor: props.data.color }"
     @click="selectedTask(props.data.id as number)"
     @mousedown="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_WHOLE)"
   >
@@ -32,8 +33,8 @@ import { useDay } from '@/hooks/useDay';
 import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
 
-const { selectedTask, mousedown, mouseenter } = useDay();
-const { store } = useStore();
+const { mousedown, mouseenter } = useDay();
+const { store, selectedTask } = useStore();
 
 const props = defineProps<{
   data: TData;
@@ -81,7 +82,7 @@ const height = computed(() => {
 </script>
 <style>
 .day-task {
-  @apply w100% bg-blue bg-opacity-60 b-rd-2 font-size-3 color-white b-l-solid b-l-4 b-blue box-border position-absolute;
+  @apply w100% bg-blue  b-rd-2 font-size-3 color-white b-l-solid b-l-4 b-blue box-border position-absolute;
 }
 
 .day-drag-line {
