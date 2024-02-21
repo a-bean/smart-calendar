@@ -17,6 +17,7 @@ const store = ref<TStore>({
 });
 
 const onTaskChange = ref<(data: TData) => void>();
+const onTaskDelete = ref<() => void>();
 
 const currentDay = ref<string | Date>(new Date());
 
@@ -49,13 +50,7 @@ export const useStore = () => {
 
   const deleteTask = () => {
     if (!store.value.selectedTaskId) return;
-
-    // 删除任务。通过store.value.selectedTaskId删除store.value.data中的数据
-    for (const key in store.value.data) {
-      if (Object.prototype.hasOwnProperty.call(store.value.data, key)) {
-        store.value.data[key] = store.value.data[key].filter((item) => item.id !== store.value.selectedTaskId);
-      }
-    }
+    onTaskDelete.value?.();
   };
 
   let isPressedMeta = false;
@@ -91,8 +86,8 @@ export const useStore = () => {
     onRecover,
     onChange,
     onTaskChange,
+    onTaskDelete,
     selectedTask,
-    deleteTask,
     onKeydown,
     onKeyup,
   };

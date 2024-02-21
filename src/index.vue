@@ -23,13 +23,18 @@ const props = defineProps<{ data: { [key: string]: TData[] } }>();
 const emitter = defineEmits<{
   (event: 'getDateScope', scope: [string, string]): void;
   (event: 'change', data: TData): void;
+  (event: 'delete', id: number): void;
 }>();
 
-const { store, getData, currentDay, onTaskChange, onKeydown, onKeyup } = useStore();
+const { store, getData, currentDay, onTaskChange, onTaskDelete, onKeydown, onKeyup } = useStore();
 const { replenishCurrentDays } = useMonth();
 
 onTaskChange.value = (data: TData) => {
   emitter('change', data);
+};
+
+onTaskDelete.value = () => {
+  emitter('delete', store.value.selectedTaskId);
 };
 
 onUpdated(() => {
