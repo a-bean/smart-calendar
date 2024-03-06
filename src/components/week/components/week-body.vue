@@ -4,7 +4,12 @@
     <TimeDivider :need-right-border="index !== 7" />
     <template v-for="(items, index1) of groupSchedulesByOverlap(formatDataWeekData[key.date])" :key="index1">
       <template v-for="(item, i) of items" :key="item.id">
-        <DayTask :data="item" :date-key="key.date" :style="{ width: `${100 / items.length}%`, left: `${i * (100 / items.length)}%` }" />
+        <Popover>
+          <template #trigger>
+            <DayTask :data="item" :date-key="key.date" :style="{ width: `${100 / items.length}%`, left: `${i * (100 / items.length)}%` }" />
+          </template>
+          <template #default><slot :data="item"></slot></template>
+        </Popover>
       </template>
     </template>
   </div>
@@ -15,6 +20,7 @@ import { useWeek } from '@/hooks/useWeek';
 import TimeDivider from '@/components/time-divider/time-divider.vue';
 import DayTask from './day-task.vue';
 import { groupSchedulesByOverlap } from '@/utils';
+import Popover from '@/components/popover/popover.vue';
 
 const { store } = useStore();
 const { formatDataWeekData } = useWeek();

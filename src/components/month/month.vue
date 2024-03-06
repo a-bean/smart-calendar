@@ -1,7 +1,9 @@
 <template>
   <div class="month">
     <MonthHeader></MonthHeader>
-    <MonthBody class="flex-1"></MonthBody>
+    <MonthBody v-slot="slotProps" class="flex-1">
+      <slot :data="slotProps.data"></slot>
+    </MonthBody>
   </div>
 </template>
 <script setup lang="ts">

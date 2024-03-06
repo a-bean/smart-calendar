@@ -1,6 +1,8 @@
 <template>
   <div class="h80vh w90vw">
-    <Calendar :data="data" @get-date-scope="getDateScope" @change="onChange" @delete="onDelete"></Calendar>
+    <Calendar v-slot="{ data }" :data="data" @get-date-scope="getDateScope" @change="onChange" @delete="onDelete">
+      <div class="h200px w200px bg-red">{{ (data as TData).name }}</div>
+    </Calendar>
   </div>
 </template>
 <script setup lang="ts">
@@ -13,10 +15,10 @@ const getDateScope = (scope: [string, string]) => {
   // TODO:根据scope请求数据
   console.log('所展示的时间:', scope);
   data.value = {
-    '2024-02-21': [
-      { id: 13, name: '库里', start: '2024-02-21 03:00', end: '2024-02-21 07:00', color: 'purple' },
-      { id: 14, name: '格林', start: '2024-02-21 08:00', end: '2024-02-21 12:00' },
-      { id: 15, name: '汤普森', start: '2024-02-21 05:00', end: '2024-02-21 13:00' },
+    '2024-03-06': [
+      { id: 13, name: '库里', start: '2024-03-06 03:00', end: '2024-03-06 07:00', color: 'purple' },
+      { id: 14, name: '格林', start: '2024-03-06 08:00', end: '2024-03-06 12:00' },
+      { id: 15, name: '汤普森', start: '2024-03-06 05:00', end: '2024-03-06 13:00' },
     ],
   };
 };

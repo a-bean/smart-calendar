@@ -10,7 +10,9 @@
           background: item.isSaturdayOrSunday ? '#f3f3f3' : '',
         }"
       >
-        <MonthBodyItem :data="item" />
+        <MonthBodyItem v-slot="slotProps" :data="item">
+          <slot :data="slotProps.data"></slot>
+        </MonthBodyItem>
       </div>
     </div>
   </div>

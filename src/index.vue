@@ -1,7 +1,9 @@
 <template>
   <div class="h100% w100%">
     <CalendarHeader />
-    <component :is="showComponent"></component>
+    <component :is="showComponent" v-slot="slotProps">
+      <slot :data="slotProps.data"></slot>
+    </component>
   </div>
 </template>
 <script setup lang="ts">

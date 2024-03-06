@@ -16,21 +16,24 @@
       </div>
     </div>
     <div class="month-body-item-list">
-      <MonthTask
-        v-for="item of props.data.dataList?.slice(0, 1)"
-        ref="taskRef"
-        :key="item.id"
-        class="mb1px"
-        :data="item"
-        :style="{ width: getMonthTaskWidth(item) }"
-      />
-      <MonthTask
-        v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)"
-        :key="item.id"
-        class="mb1px"
-        :data="item"
-        :style="{ width: getMonthTaskWidth(item) }"
-      />
+      <template v-for="item of props.data.dataList?.slice(0, 1)" :key="item.id">
+        <Popover>
+          <template #trigger>
+            <MonthTask ref="taskRef" class="mb1px" :data="item" :style="{ width: getMonthTaskWidth(item) }" />
+          </template>
+          <template #default><slot :data="item"></slot></template>
+        </Popover>
+      </template>
+
+      <template v-for="item of props.data.dataList?.slice(1, showTaskCount - 1)" :key="item.id">
+        <Popover>
+          <template #trigger>
+            <MonthTask ref="taskRef" class="mb1px" :data="item" :style="{ width: getMonthTaskWidth(item) }" />
+          </template>
+          <template #default><slot :data="item"></slot></template>
+        </Popover>
+      </template>
+
       <div v-if="surplusTaskCount > 0" class="month-body-item-list-surplus">还有{{ surplusTaskCount }}项...</div>
     </div>
   </div>
@@ -41,6 +44,7 @@ import { TData, TDate } from '@/types';
 import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
 import { getDate, getTimeInterval, getWeekIndex, isBefore } from '@/date';
+import Popover from '@/components/popover/popover.vue';
 
 const { onDrop, onDragover, taskBoxWidth } = useMonth();
 

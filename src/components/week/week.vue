@@ -3,7 +3,9 @@
     <WeekHeader />
     <div ref="bodyRef" class="flex-1 flex overflow-scroll pt-1.6">
       <TimeScale class="w15" />
-      <WeekBody />
+      <WeekBody v-slot="slotProps">
+        <slot :data="slotProps.data"></slot>
+      </WeekBody>
     </div>
   </div>
 </template>

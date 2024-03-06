@@ -4,7 +4,12 @@
     <CurrentTimeline class="w100% position-absolute" />
     <template v-for="(items, index) of props.data" :key="index">
       <template v-for="(item, i) of items" :key="item.id">
-        <DayTask :data="item" :style="{ width: `${100 / items.length}%`, left: `${i * (100 / items.length)}%` }" />
+        <Popover>
+          <template #trigger>
+            <DayTask :data="item" :style="{ width: `${100 / items.length}%`, left: `${i * (100 / items.length)}%` }" />
+          </template>
+          <template #default><slot :data="item"></slot></template>
+        </Popover>
       </template>
     </template>
   </div>
@@ -16,6 +21,7 @@ import CurrentTimeline from '@/components/current-timeline/current-timeline.vue'
 import DayTask from './day-task.vue';
 import { useDay } from '@/hooks/useDay';
 import { TData } from '@/types';
+import Popover from '@/components/popover/popover.vue';
 
 const props = defineProps<{
   data: TData[][];

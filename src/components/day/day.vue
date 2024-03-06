@@ -10,7 +10,9 @@
       <!-- 刻度 -->
       <TimeScale class="w15" />
       <!-- 任务区域 -->
-      <dayBody :data="formatData" />
+      <dayBody v-slot="slotProps" :data="formatData">
+        <slot :data="slotProps.data"></slot>
+      </dayBody>
     </div>
   </div>
 </template>
