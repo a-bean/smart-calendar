@@ -13,6 +13,7 @@ let isDragging = false;
 let initialY: number;
 let targetId: number;
 let moveType: ETaskMoveType;
+let operateTarget: TData;
 
 export const useWeek = () => {
   const findDropTargetDate = (id: number) => {
@@ -100,8 +101,10 @@ export const useWeek = () => {
     window.removeEventListener('mousemove', mousemove);
   };
 
-  const mousedown = (e: MouseEvent, id: number, type: ETaskMoveType) => {
-    targetId = id;
+  const mousedown = (e: MouseEvent, target: TData, type: ETaskMoveType) => {
+    operateTarget = target;
+    targetId = target.id as number;
+    console.log('target', target);
     isDragging = true;
     initialY = e.clientY;
 
@@ -119,10 +122,13 @@ export const useWeek = () => {
   const onColumnsMouseenter = (key: string) => {
     if (!isDragging) return;
     const target = findDropTargetDate(targetId);
-    // TODO: 跨天的情况未实现
-    target.start = `${key} ${getDate({ date: target.start, format: 'HH:mm' })}`;
-    target.end = `${key} ${getDate({ date: target.end, format: 'HH:mm' })}`;
-    console.log('target', target);
+    const step = getTimeInterval({ bigDate: key, smallDate: getDate({ date: operateTarget.start, format: 'YYYY-MM-DD' }), unit: 'day' });
+    target.start = `${getDate({ date: target.start, format: 'YYYY-MM-DD', add: step })} ${getDate({
+      date: target.start,
+      format: 'HH:mm',
+    })}`;
+
+    target.end = `${getDate({ date: target.end, format: 'YYYY-MM-DD', add: step })} ${getDate({ date: target.end, format: 'HH:mm' })}`;
   };
 
   return {

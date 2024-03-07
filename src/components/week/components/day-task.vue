@@ -4,18 +4,18 @@
     :class="{ 'task-active-opacity': props.data?.id === store.selectedTaskId }"
     :style="{ top: `${top}%`, height: `${height}%`, backgroundColor: props.data.color, borderColor: props.data.color }"
     @click="selectedTask(props.data.id as number)"
-    @mousedown="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_WHOLE)"
+    @mousedown="(e) => mousedown(e, props.data, ETaskMoveType.MOVE_WHOLE)"
   >
     <!--上拖拉的线-->
     <div
       class="day-drag-line top--1.5"
-      @mousedown.stop="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_TOP)"
+      @mousedown.stop="(e) => mousedown(e, props.data, ETaskMoveType.MOVE_TOP)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_TOP)"
     ></div>
     <!--下拖拉的线-->
     <div
       class="day-drag-line bottom--1.5"
-      @mousedown.stop="(e) => mousedown(e, props.data.id as number, ETaskMoveType.MOVE_BOTTOM)"
+      @mousedown.stop="(e) => mousedown(e, props.data, ETaskMoveType.MOVE_BOTTOM)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_BOTTOM)"
     ></div>
     <div class="mt-0.6 ml-2">{{ props.data.title }}</div>
