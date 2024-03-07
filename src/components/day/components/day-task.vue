@@ -22,7 +22,7 @@
     <div class="mt-0.6 ml-2">
       {{ getDate({ date: props.data.start, format: 'MM-DD HH:mm' }) }} - {{ getDate({ date: props.data.end, format: 'MM-DD HH:mm' }) }}
     </div>
-    <div class="ml-2">{{ props.data.name }}</div>
+    <div class="ml-2">{{ props.data.title }}</div>
   </div>
 </template>
 <script setup lang="ts">

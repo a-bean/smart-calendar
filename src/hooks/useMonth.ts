@@ -96,7 +96,7 @@ export const useMonth = () => {
 
           // 在当前行补充数据（占位，用id为string，后续显示隐藏掉），如果当前行不够，就补充下一行
           for (let l = 1; l < offset && interval > 1; l++) {
-            list[i][l + j].dataList.splice(k, 0, { id: '-1', name: '占位', start: '', end: '' });
+            list[i][l + j].dataList.splice(k, 0, { id: '-1', title: '占位', start: '', end: '' });
           }
 
           // 补充下一行的数据
@@ -179,7 +179,7 @@ export const useMonth = () => {
     }
     const newTask = {
       id: dragData.targetId,
-      name: dragData.targetTask!.name,
+      title: dragData.targetTask!.title,
       start: newTaskStart,
       end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD HH:mm' }),
     };

@@ -18,7 +18,7 @@ const setPosition = () => {
   const firstChild = popoverRef.value?.children[0].getBoundingClientRect();
   const secondChild = popoverRef.value?.children[1].getBoundingClientRect();
 
-  // 当右边能放下时，放右边，如果右边放不下，在考虑放左边，当左边能放下时，放左边，放不下再考虑放上边，放不下再考虑放下边，放不下再考虑放下边
+  // 当右边能放下时，放右边，如果右边放不下，在考虑放左边，当左边能放下时，放左边，放不下再考虑放上边，放不下再考虑放下边，放不下再考虑放下边，放不下再放中间
   const r = firstChild.left + firstChild.width + secondChild.width;
   const l = firstChild.left - secondChild.width;
   const t = firstChild.top - secondChild.height;

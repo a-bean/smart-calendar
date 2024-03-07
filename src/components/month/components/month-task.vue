@@ -10,7 +10,7 @@
   >
     <div class="flex flex-items-center">
       <div class="month-task-point"></div>
-      {{ props.data?.name }}
+      {{ props.data?.title }}
     </div>
   </div>
 </template>
