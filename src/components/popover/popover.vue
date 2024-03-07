@@ -26,20 +26,23 @@ const setPosition = () => {
 
   const positionFn = {
     top: () => {
-      top.value = `${firstChild.top - secondChild.height}px`;
+      top.value = `${firstChild.top - secondChild.height - 5}px`;
       left.value = `${firstChild.left + firstChild.width / 2 - secondChild.width / 2}px`;
     },
+
     right: () => {
       top.value = `${firstChild.top + firstChild.height / 2 - secondChild.height / 2}px`;
-      left.value = `${firstChild.left + firstChild.width}px`;
+      left.value = `${firstChild.left + firstChild.width + 5}px`;
     },
+
     bottom: () => {
-      top.value = `${firstChild.top + firstChild.height}px`;
+      top.value = `${firstChild.top + firstChild.height + 5}px`;
       left.value = `${firstChild.left + firstChild.width / 2 - secondChild.width / 2}px`;
     },
+
     left: () => {
       top.value = `${firstChild.top + firstChild.height / 2 - secondChild.height / 2}px`;
-      left.value = `${firstChild.left - secondChild.width}px`;
+      left.value = `${firstChild.left - secondChild.width - 5}px`;
     },
 
     center: () => {
@@ -51,15 +54,19 @@ const setPosition = () => {
   if (r < window.innerWidth) {
     return positionFn.right();
   }
+
   if (l > 0) {
     return positionFn.left();
   }
+
   if (t > 0) {
     return positionFn.top();
   }
+
   if (b < window.innerHeight) {
     return positionFn.bottom();
   }
+
   return positionFn.center();
 };
 

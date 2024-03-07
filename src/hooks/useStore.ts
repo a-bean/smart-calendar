@@ -79,6 +79,19 @@ export const useStore = () => {
     }
   };
 
+  const addTask = (index: number, key: string) => {
+    if (!store.value.data[key]) {
+      store.value.data[key] = [];
+    }
+
+    store.value.data[key].push({
+      id: Date.now(),
+      start: `${key} ${index}:00:00`,
+      end: `${key} ${index + 1}:00:00`,
+      title: '新建任务',
+    });
+  };
+
   return {
     store,
     currentDay,
@@ -90,5 +103,6 @@ export const useStore = () => {
     selectedTask,
     onKeydown,
     onKeyup,
+    addTask,
   };
 };

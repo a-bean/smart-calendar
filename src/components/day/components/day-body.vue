@@ -1,6 +1,6 @@
 <template>
   <div ref="bodyRef" class="flex-1 position-relative">
-    <TimeDivider />
+    <TimeDivider @ondblclick="timeDividerDblclick" />
     <CurrentTimeline class="w100% position-absolute" />
     <template v-for="(items, index) of props.data" :key="index">
       <template v-for="(item, i) of items" :key="item.id">
@@ -22,7 +22,9 @@ import DayTask from './day-task.vue';
 import { useDay } from '@/hooks/useDay';
 import { TData } from '@/types';
 import Popover from '@/components/popover/popover.vue';
+import { useStore } from '@/hooks/useStore';
 
+const { store, addTask } = useStore();
 const props = defineProps<{
   data: TData[][];
 }>();
@@ -32,6 +34,10 @@ const { taskBodyHeight } = useDay();
 const bodyRef = ref<HTMLElement | null>(null);
 const getBodyHeight = () => {
   taskBodyHeight.value = bodyRef.value?.clientHeight || 0;
+};
+
+const timeDividerDblclick = (index: number) => {
+  addTask(index, store.value.currentDate[0].date);
 };
 
 onMounted(() => {

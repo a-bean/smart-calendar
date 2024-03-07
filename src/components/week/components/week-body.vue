@@ -1,7 +1,7 @@
 <template>
   <div v-for="(key, index) of store.currentDate" :key="key.date" class="flex-1 position-relative" @mouseenter="mouseenter">
     <div class="position-absolute top--1.6 left-0 right-0 h1.6" :class="{ 'b-r-solid b-r-1 b-r-#ccc': index !== 7 }"></div>
-    <TimeDivider :need-right-border="index !== 7" />
+    <TimeDivider :need-right-border="index !== 7" @ondblclick="(i) => addTask(i, key.date)" />
     <template v-for="(items, index1) of groupSchedulesByOverlap(formatDataWeekData[key.date])" :key="index1">
       <template v-for="(item, i) of items" :key="item.id">
         <Popover>
@@ -22,7 +22,7 @@ import DayTask from './day-task.vue';
 import { groupSchedulesByOverlap } from '@/utils';
 import Popover from '@/components/popover/popover.vue';
 
-const { store } = useStore();
+const { store, addTask } = useStore();
 const { formatDataWeekData } = useWeek();
 
 const mouseenter = (e: Event) => {

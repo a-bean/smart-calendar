@@ -1,5 +1,12 @@
 <template>
-  <div ref="boxRef" class="month-body-item" :data-date="props.data.date" @dragover="onDragover" @drop="onDrop">
+  <div
+    ref="boxRef"
+    class="month-body-item"
+    :data-date="props.data.date"
+    @dragover="onDragover"
+    @drop="onDrop"
+    @dblclick="addTask(9, props.data.date)"
+  >
     <div ref="titleRef" class="month-body-item-title" :class="{ 'color-#c9cdd4': !props.data.isCurrentMonth }">
       <div :class="{ 'border-b border-b-solid border-red ': props.data.isFirstDayOfLunarMonth }">
         {{ props.data.isFirstDayOfLunarMonth ? props.data.lunarMonth + props.data.lunarDay : props.data.lunarDay }}
@@ -45,8 +52,10 @@ import MonthTask from './month-task.vue';
 import { useMonth } from '@/hooks/useMonth';
 import { getDate, getTimeInterval, getWeekIndex, isBefore } from '@/date';
 import Popover from '@/components/popover/popover.vue';
+import { useStore } from '@/hooks/useStore';
 
 const { onDrop, onDragover, taskBoxWidth } = useMonth();
+const { addTask } = useStore();
 
 const props = defineProps<{
   data: TDate & { dataList?: TData[] };
