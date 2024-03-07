@@ -1,7 +1,7 @@
 <template>
   <div ref="popoverRef" @dblclick="show">
     <slot name="trigger"></slot>
-    <div class="p3 rd bg-white position-fixed z-10000" :style="{ top: top, left: left }">
+    <div class="position-fixed z-10000" :style="{ top: top, left: left }">
       <slot></slot>
     </div>
   </div>
@@ -43,8 +43,8 @@ const setPosition = () => {
     },
 
     center: () => {
-      top.value = `${firstChild.top + firstChild.height / 2 - secondChild.height / 2}px`;
-      left.value = `${firstChild.left + firstChild.width / 2 - secondChild.width / 2}px`;
+      top.value = `calc(50% - ${secondChild.height / 2}px)`;
+      left.value = `calc(50% - ${secondChild.width / 2}px)`;
     },
   };
 
