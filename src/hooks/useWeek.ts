@@ -9,16 +9,29 @@ const MIN_HEIGHT = 15;
 const BEST_TIME_SCALE = 15;
 const taskBodyHeight = ref(0);
 const { store, onTaskChange } = useStore();
+let isDragging = false;
+let initialY: number;
+let targetId: number;
+let moveType: ETaskMoveType;
 
 export const useWeek = () => {
+  const findDropTargetDate = (id: number) => {
+    let moveTarget: TData = {} as TData;
+    for (const dataKey in store.value.data) {
+      if (!Object.prototype.hasOwnProperty.call(store.value.data, dataKey)) continue;
+      // eslint-disable-next-line no-loop-func
+      const targetData = store.value.data[dataKey].find((item) => item.id === id);
+      if (targetData) {
+        moveTarget = targetData;
+        break;
+      }
+    }
+    return moveTarget;
+  };
+
   const formatDataWeekData = computed(() => {
     return formatWeekTask(store.value.data);
   });
-
-  let isDragging = false;
-  let initialY: number;
-  let targetId: number;
-  let moveType: ETaskMoveType;
 
   const changeMoveType = (type: ETaskMoveType) => {
     moveType = type;
@@ -63,16 +76,7 @@ export const useWeek = () => {
     isDragging = false;
 
     // 滑动后调整开始或者结束时间，将时间的 分钟 总是调整为15的的倍数
-    let target: TData;
-    for (const dataKey in store.value.data) {
-      if (!Object.prototype.hasOwnProperty.call(store.value.data, dataKey)) continue;
-      // eslint-disable-next-line no-loop-func
-      const targetData = store.value.data[dataKey].find((item) => item.id === targetId);
-      if (targetData) {
-        target = targetData;
-        break;
-      }
-    }
+    const target = findDropTargetDate(targetId);
     const oldDate = JSON.parse(JSON.stringify(target!));
     const startRemainder = Number(getDate({ date: target!.start, format: 'mm' })) % BEST_TIME_SCALE;
     const endRemainder = Number(getDate({ date: target!.end, format: 'mm' })) % BEST_TIME_SCALE;
@@ -112,6 +116,15 @@ export const useWeek = () => {
     changeMoveType(type);
   };
 
+  const onColumnsMouseenter = (key: string) => {
+    if (!isDragging) return;
+    const target = findDropTargetDate(targetId);
+    // TODO: 跨天的情况未实现
+    target.start = `${key} ${getDate({ date: target.start, format: 'HH:mm' })}`;
+    target.end = `${key} ${getDate({ date: target.end, format: 'HH:mm' })}`;
+    console.log('target', target);
+  };
+
   return {
     formatDataWeekData,
     taskBodyHeight,
@@ -120,5 +133,6 @@ export const useWeek = () => {
     mouseup,
     mouseenter,
     changeMoveType,
+    onColumnsMouseenter,
   };
 };
