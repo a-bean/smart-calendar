@@ -13,7 +13,8 @@ let isDragging = false;
 let initialY: number;
 let targetId: number;
 let moveType: ETaskMoveType;
-let operateTarget: TData;
+// 用于跨日期的task，记录鼠标点击位置于开头时间的偏移天数
+let interval: number;
 
 export const useWeek = () => {
   const findDropTargetDate = (id: number) => {
@@ -102,11 +103,16 @@ export const useWeek = () => {
   };
 
   const mousedown = (e: MouseEvent, target: TData, type: ETaskMoveType) => {
-    operateTarget = target;
     targetId = target.id as number;
-    console.log('target', target);
     isDragging = true;
     initialY = e.clientY;
+
+    const target1 = findDropTargetDate(targetId);
+    interval = getTimeInterval({
+      bigDate: target.start,
+      smallDate: getDate({ date: target1.start, format: 'YYYY-MM-DD' }),
+      unit: 'day',
+    });
 
     changeMoveType(type);
 
@@ -122,7 +128,9 @@ export const useWeek = () => {
   const onColumnsMouseenter = (key: string) => {
     if (!isDragging) return;
     const target = findDropTargetDate(targetId);
-    const step = getTimeInterval({ bigDate: key, smallDate: getDate({ date: operateTarget.start, format: 'YYYY-MM-DD' }), unit: 'day' });
+    const step =
+      getTimeInterval({ bigDate: key, smallDate: getDate({ date: target.start, format: 'YYYY-MM-DD' }), unit: 'day' }) - interval;
+
     target.start = `${getDate({ date: target.start, format: 'YYYY-MM-DD', add: step })} ${getDate({
       date: target.start,
       format: 'HH:mm',

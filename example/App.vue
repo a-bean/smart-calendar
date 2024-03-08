@@ -18,8 +18,8 @@ const getDateScope = (scope: [string, string]) => {
   // TODO:根据scope请求数据
   console.log('所展示的时间:', scope);
   data.value = {
-    '2024-03-08': [
-      { id: 13, title: '库里', start: '2024-03-08 03:00', end: '2024-03-08 07:00', color: 'purple' },
+    '2024-03-06': [
+      { id: 13, title: '库里', start: '2024-03-06 03:00', end: '2024-03-07 07:00', color: 'purple' },
       // { id: 14, title: '格林', start: '2024-03-07 08:00', end: '2024-03-07 12:00' },
       // { id: 15, title: '汤普森', start: '2024-03-07 05:00', end: '2024-03-07 13:00' },
     ],
