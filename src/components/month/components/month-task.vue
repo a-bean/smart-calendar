@@ -12,12 +12,14 @@
       <div class="month-task-point"></div>
       {{ props.data?.title }}
     </div>
+    <div>{{ getDate({ date: props.data?.start, format: 'HH:mm' }) }}</div>
   </div>
 </template>
 <script setup lang="ts">
 import { useMonth } from '@/hooks/useMonth';
 import { useStore } from '@/hooks/useStore';
 import { TData } from '@/types';
+import { getDate } from '@/date';
 
 const { onDragStart } = useMonth();
 const { selectedTask, store } = useStore();
@@ -33,12 +35,5 @@ const props = defineProps<{
 }
 .month-task-point {
   @apply h1.4 w1.4 b-rd-50% mr1 bg-white;
-}
-
-.task-default-opacity {
-  opacity: 0.7;
-}
-.task-active-opacity {
-  opacity: 1;
 }
 </style>

@@ -1,9 +1,14 @@
 <template>
   <div>
     <div class="w100% flex font-size-3.5">
-      <div class="w15 h6 line-height-6 text-right color-#ccc">{{ getLunarMonth(store.currentDate[0].date) }}</div>
+      <div class="w15 h7 line-height-7 text-right color-#ccc">{{ getLunarMonth(store.currentDate[0].date) }}</div>
       <div v-for="item of store.currentDate" :key="item.date" class="h6 line-height-6 flex-1 flex justify-between pr2 pl2">
-        <div>{{ getDate({ date: item.date, format: 'DD' }) }} {{ item.lunarDay }}</div>
+        <div>
+          <span :class="`${item.isToday ? 'is-today' : ''}`">
+            {{ getDate({ date: item.date, format: 'DD' }) }}
+          </span>
+          {{ item.lunarDay }}
+        </div>
         <div>{{ item.week }}</div>
       </div>
     </div>

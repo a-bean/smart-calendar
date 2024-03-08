@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { ECalendarType, TData, TDate } from '@/types';
-import { getDaysScope } from '@/date';
+import { getDaysScope, getDate } from '@/date';
 
 type TStore = {
   data: { [key: string]: TData[] };
@@ -32,7 +32,7 @@ export const useStore = () => {
       type: store.value.calendarVisible,
       date: new Date(),
     });
-    currentDay.value = store.value.currentDate[0].date;
+    currentDay.value = getDate({ date: new Date() });
   };
 
   const onChange = (value: number) => {

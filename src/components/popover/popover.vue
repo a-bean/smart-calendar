@@ -1,5 +1,5 @@
 <template>
-  <div ref="popoverRef" @dblclick="show">
+  <div ref="popoverRef" @dblclick.stop="show">
     <slot name="trigger"></slot>
     <div class="position-fixed z-10000" :style="{ top: top, left: left }">
       <slot></slot>

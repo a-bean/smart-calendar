@@ -15,7 +15,7 @@
         {{ getDate({ date: props.data.date, format: 'MM月DD日' }) }}
       </div>
       <div v-else>
-        <span v-if="props.data.isToday" class="month-body-item-is-today">
+        <span v-if="props.data.isToday" class="is-today">
           {{ cutDay(props.data.date) }}
         </span>
         <span v-else>{{ cutDay(props.data.date) }} </span>
@@ -131,9 +131,6 @@ onUnmounted(() => {
 }
 .month-body-item-title {
   @apply h6 flex flex-justify-between flex-items-center font-size-3.5 p2 pb0;
-}
-.month-body-item-is-today {
-  @apply inline-block h6 w6 border-rd-50% line-height-6 color-#fff bg-red text-center;
 }
 .month-body-item-list {
   @apply flex-1 mt1;

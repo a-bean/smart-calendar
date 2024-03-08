@@ -23,7 +23,7 @@
 import { useStore } from '@/hooks/useStore';
 import { useWeek } from '@/hooks/useWeek';
 import TimeDivider from '@/components/time-divider/time-divider.vue';
-import DayTask from './day-task.vue';
+import DayTask from './week-task.vue';
 import { groupSchedulesByOverlap } from '@/utils';
 import Popover from '@/components/popover/popover.vue';
 

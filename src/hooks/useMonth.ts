@@ -177,12 +177,14 @@ export const useMonth = () => {
     if (!store.value.data[newKey]) {
       store.value.data[newKey] = [];
     }
+
     const newTask = {
-      id: dragData.targetId,
-      title: dragData.targetTask!.title,
+      ...dragData.targetTask!,
+      // id: dragData.targetId,
       start: newTaskStart,
       end: getDate({ date: dragData.targetTask!.end, add: taskOffset, type: 'day', format: 'YYYY-MM-DD HH:mm' }),
     };
+
     if (getTimeInterval({ bigDate: newTask.end, smallDate: newTask.start, unit: 'day' }) > 0) {
       // task跨天就加在前面
       store.value.data[newKey].unshift(newTask);

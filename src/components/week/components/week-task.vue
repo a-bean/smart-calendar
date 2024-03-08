@@ -18,10 +18,8 @@
       @mousedown.stop="(e) => mousedown(e, props.data, ETaskMoveType.MOVE_BOTTOM)"
       @mouseenter="mouseenter(ETaskMoveType.MOVE_BOTTOM)"
     ></div>
-    <div class="mt-0.6 ml-2">{{ props.data.title }}</div>
-    <div class="ml-2">
-      {{ getDate({ date: props.data.start, format: 'MM-DD HH:mm' }) }} - {{ getDate({ date: props.data.end, format: 'MM-DD HH:mm' }) }}
-    </div>
+    <div>{{ getDate({ date: props.data.start, format: 'HH:mm' }) }}</div>
+    <div class="font-500">{{ props.data.title }}</div>
   </div>
 </template>
 <script setup lang="ts">
@@ -82,7 +80,7 @@ const height = computed(() => {
 </script>
 <style>
 .day-task {
-  @apply w100% bg-blue font-size-3 color-white box-border position-absolute;
+  @apply w100% bg-blue font-size-3 color-white box-border position-absolute p1;
 }
 
 .day-drag-line {
